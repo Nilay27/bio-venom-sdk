@@ -1,0 +1,105 @@
+pragma ever-solidity >= 0.61.0;
+pragma AbiHeader expire;
+import "./EllipticCurve.tsol";
+import "locklift/src/console.tsol";
+pragma ignoreIntOverflow;
+
+
+/// @title Simple wallet
+/// @author Tonlabs
+contract Wallet is EllipticCurve{
+    uint16 static _nonce;
+    /*
+     Exception codes:
+      100 - message sender is not a wallet owner.
+      101 - invalid transfer value.
+     */
+     address ellipticCurve;
+     bool signatureCheckInProgress;
+
+     uint256 nonce;
+
+    /// @dev Contract constructor.
+     constructor(address _ellipticCurve) public{
+        tvm.accept();
+        ellipticCurve = _ellipticCurve;
+    }
+
+    // Modifier that allows function to accept external call only if it was signed
+    // with contract owner's public key.
+    modifier checkOwnerAndAccept {
+        // Check that inbound message was signed with owner's public key.
+        // Runtime function that obtains sender's public key.
+        require(tvm.pubkey()!= 0, 100);
+
+		// Runtime function that allows contract to process inbound messages spending
+		// its own resources (it's necessary if contract should process all inbound messages,
+		// not only those that carry value with them).
+		tvm.accept();
+		_;
+	}
+
+    function checkSignature(bytes32 message, uint256[2]  rs, uint256[2]  Q) public {
+        tvm.accept();
+        // (uint256 _x1, uint256 _y1, uint256 _x2, uint256 _y2) = getXYCoordinates(message, rs, Q);
+        // (uint256 addx, uint256 addy) = add(rs[0], rs[1], Q[0], Q[1]);
+        // uint256  a = 0xFFFFFFFF00000001000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFC;
+        // uint256  b = 0x5AC635D8AA3A93E7B3EBBD55769886BC651D06B0CC53B0F63BCE3C3E27D2604B;
+        // uint256  gx = 0x6B17D1F2E12C4247F8BCE6E563A440F277037D812DEB33A0F4A13945D898C296;
+        // uint256  gy = 0x4FE342E2FE1A7F9B8EE7EB4A7C0F9E162BCE33576B315ECECBB6406837BF51F5;
+        // uint256  p = 0xFFFFFFFF00000001000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFF;
+        uint256  n = 0xFFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632551;
+        // bool isOnCurve = EllipticCurve(ellipticCurve).isOnCurve{value: 0.1 ton}(Q[0], Q[1]).await;
+        // require(isOnCurve, 105);
+        uint256 sInv =inverseMod(rs[1], n);
+        uint256 thirdParam = mulDivMod(rs[0], sInv, n);
+        (uint256 x1, uint256 y1) = multiplyScalar(Q[0], Q[1], thirdParam);
+        // EllipticCurve(ellipticCurve).multiplyScalar{value: 2 ton, callback: this.onSignatureCheck}(gx, gy, thirdParam);
+        // x1 = _x1;
+        // y1 = _y1;
+        // x2 = _x2;
+        // y2 = _y2;
+
+        // EllipticCurve(ellipticCurve).validateSignatureWithXY{value: 1 ton, callback: this.onSignatureCheck}(rs, 30437901221101153057795259598945666690968930003691203639884787592484284914135
+        // , 31638352487158992567497207773829800310832227296326008010138672950236667218291,
+        // 101987423488992999408609726673919974092919791873506230155669664466859230275048, 106321812325428183351048799157350547512421769785881270234459005651854696845933);
+    //    (uint256 _x1, uint256 _y1, uint256 _x2, uint256 _y2) = getXYCoordinates(message, rs, Q);
+        // x1 = _x1;
+        // y1 = _y1;
+        // x2 = _x2;
+        // y2 = _y2;
+        
+    }
+    // function mulDivMod(uint256 x, uint256 y, uint256 z) public view returns (uint256 remainder) {
+    //     (, uint256 x2) =  math.muldivmod(x, y, z);
+    //     remainder = x2;
+    // }
+
+    function onSignatureCheck(bool result) public {
+        // require(!signatureCheckInProgress, 101);
+        require(result, 101);
+        // x1 = _x1;
+        // y1 = _y1;
+        // x2 = _x2;
+        // y2 = _y2;
+    }
+
+    function getSignatureCheckStatus() public view returns (bool) {
+        return signatureCheckInProgress;
+    }
+
+    // function getXYCoordinatesDetails() public view returns (uint, uint, uint, uint) {
+    //     return (x1, y1, x2, y2);
+    // }
+
+
+
+    /// @dev Allows to transfer tons to the destination account.
+    /// @param dest Transfer target address.
+    /// @param value Nanotons value to transfer.
+    /// @param bounce Flag that enables bounce message in case of target contract error.
+    function sendTransaction(address dest, uint128 value, bool bounce, TvmCell payload) public view checkOwnerAndAccept {
+         // Runtime function that allows to make a transfer with arbitrary settings.
+        dest.transfer({value: value, bounce: bounce, flag: 0, body: payload});
+    }
+}
