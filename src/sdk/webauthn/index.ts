@@ -11,6 +11,7 @@ import { decode, encode } from './base64url-arraybuffer';
 import crypto from 'crypto';
 import { Buffer } from 'buffer/';
 window.Buffer = Buffer;
+import BN from 'bn.js';
 
 // import { Buffer as BufferPolyfill } from 'buffer'
 // declare var Buffer: typeof BufferPolyfill;
@@ -225,5 +226,31 @@ export const getSignatureAndFinalMessageToBeSigned = async (credential: any) =>{
 
     return {message: finalMessageToBeSigned, r: signature[0], s: signature[1]}
 
+}
+
+export const getRSAndXYCoordinates = async (credential: any, Q: string[]) =>{
+  console.log("Q value in getRSAndXYCoordinates", Q)
+  // get signature and finalMessageToBeSigned
+  const {message, r, s} = await getSignatureAndFinalMessageToBeSigned(credential)
+  console.log("final message to be signed", message)
+  // get public key
+  const N: BN = ec.curve.n;
+  console.log(N.toString(10))
+  const rs0 = new BN(r.slice(2), 16); // Remove the "0x" prefix
+  const rs1 = new BN(s.slice(2), 16); // Remove the "0x" prefix
+  const Q0 = new BN(Q[0].slice(2), 16); // Remove the "0x" prefix
+  const Q1 = new BN(Q[1].slice(2), 16); // Remove the "0x" prefix
+  const curvePoint = ec.curve.point(Q0, Q1);
+  console.log( "isOnCurve" , curvePoint.validate());
+  const sInv = rs1.invm(N);
+  const point1 = ec.g.mul(new BN(message.slice(2), 16).mul(sInv).mod(N));
+  const x1 = '0x' + (point1.getX()).toString(16);
+  const y1 = '0x' + (point1.getY()).toString(16);
+
+  const point2 = curvePoint.mul(rs0.mul(sInv).mod(N));
+  const x2 = '0x' + (point2.getX()).toString(16);
+  const y2 = '0x' + (point2.getY()).toString(16);
+
+  return {rs: [r,s], x1: x1, y1: y1, x2: x2, y2: y2}
 }
 

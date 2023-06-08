@@ -1,3 +1,4 @@
 node_modules
 locklift.config.ts
 build
+.temp
