@@ -1,31 +1,28 @@
 import React from 'react';
-import {getCredential, getSignature, getSignatureAndFinalMessageToBeSigned} from '../../../sdk/webauthn/index'
+import {getCredential, getRSAndXYCoordinates} from '../../../sdk/webauthn/index'
 import { useState, useEffect } from 'react';
-// import {Provider} from '../../../sdk/Provider'
+import {SampleWalletAbi} from "../../abis/SampleWalletAbi"
 import { Address, ProviderRpcClient, TvmException } from 'everscale-inpage-provider';
-import {SampleAbi} from "../../abis/SampleAbi"
 import { EverscaleStandaloneClient } from 'everscale-standalone-client';
-
 
 const Transaction: React.FC = () => {
     const [username, setUsername] = useState<string>('');
     const [encodedId, setEncodedId] = useState<string>('');
     const [BioVenomProvider, setBioVenomProvider] = useState<any>('');
-    const [EllipticContract, setEllipticContract] = useState<any>('');
+    const [WalletContract, setWalletContract] = useState<any>('');
 
   const handleSignTransactionClick = async () => {
     const credential = await getCredential(encodedId, username);
     console.log("credential", credential)
-    const signature = await getSignature(credential);
-    console.log("signature", signature)
-    const {message, r, s} = await getSignatureAndFinalMessageToBeSigned(credential);
-    console.log("message", message)
-    console.log("r", r)
-    console.log("s", s)
-    // const output = await EllipticContract.methods.setState({_state: 12}).sendExternal({withoutSignature: true})
-    // console.log("output", output)
-    // const output2 = await EllipticContract.methods.getDetails({}).call()
-    // console.log("output2", output2)
+    const publicKey = JSON.parse(localStorage.getItem(username) || '{}').publicKey;
+    const {rs, x1, y1, x2, y2} = await getRSAndXYCoordinates(credential, publicKey);
+    console.log("rs", rs)
+    console.log("x1", x1)
+    console.log("y1", y1)
+    console.log("x2", x2)
+    console.log("y2", y2)
+    const output = await WalletContract.methods.validateSignature({rs:rs, x1:x1, y1:y1, x2:x2, y2:y2}).sendExternal({withoutSignature: true})
+    console.log("output", output)
   };
 
   // useEffect to get the publicKeyCredential from localStorage and set it to state
@@ -36,7 +33,6 @@ const Transaction: React.FC = () => {
           setUsername(username);
           const {encodedId, publicKey} = JSON.parse(localStorage.getItem(username) || '{}');
           console.log("publicKey", publicKey)
-          // const actualId= JSON.parse(encodedId || '{}');
           if (encodedId !== null) {
             console.log("encodedId in txn", encodedId)
             setEncodedId(encodedId);
@@ -59,11 +55,11 @@ const Transaction: React.FC = () => {
         });
         console.log("BioVenomProvider", BioVenomProvider)
         setBioVenomProvider(BioVenomProvider);
-
-        const ellipticAddress = new Address("0:7614152f2a4c61fc0c53bfc82906d61e33d585bb3208d3229d8580d4fb289ba1")
-        const EllipticContract = new BioVenomProvider.Contract(SampleAbi, ellipticAddress);
-        console.log("EllipticContract", EllipticContract)
-        setEllipticContract(EllipticContract);
+        setBioVenomProvider(BioVenomProvider);
+        const walletAddress = new Address("0:119cc0b53e20dcef8819c541b0178e6db69227f989a32ad8525d06be6279562c")
+        const WalletContract = new BioVenomProvider.Contract(SampleWalletAbi, walletAddress);
+        console.log("walletAddress", WalletContract.address.toString())
+        setWalletContract(WalletContract);
     }, []);
 
 
