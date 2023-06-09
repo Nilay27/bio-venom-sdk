@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {createCredential, getPublicKey} from '../../../sdk/webauthn/index'
 import { encode } from '../../../sdk/webauthn/base64url-arraybuffer';
+import {BioVenomProvider} from "../../../sdk/BioVenomProvider"
 
 interface SignInProps {
   onSignIn: () => void;
@@ -26,9 +27,13 @@ const SignIn: React.FC<SignInProps> = ({ onSignIn }) => {
       const publicKey = await getPublicKey(publicKeyCredential.response.attestationObject)
       console.log("username", username);
       const encodedId = encode(publicKeyCredential?.rawId);
+      const venomInstance = new BioVenomProvider();
+      // deploy wallet contract and prefund it
+      const walletAddress = await venomInstance.deployWalletContract(publicKey);
+      console.log("walletAddress returned from venomInstance", walletAddress);
       console.log("encodedId in signIn", encodedId);
       // store the publicKeyCredential against the username in localStorage
-      localStorage.setItem(username, JSON.stringify({encodedId:encodedId, publicKey:publicKey}));
+      localStorage.setItem(username, JSON.stringify({encodedId:encodedId, publicKey:publicKey, walletAddress:walletAddress}));
       localStorage.setItem("username", username);
     }
     onSignIn();

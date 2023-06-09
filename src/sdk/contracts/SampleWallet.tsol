@@ -23,15 +23,16 @@ contract Wallet is EllipticCurve{
       100 - message sender is not a wallet owner.
       101 - invalid transfer value.
      */
-     address ellipticCurve;
-
      uint256 nonce;
 
+     uint256 Q0;
+     uint256 Q1;
     /// @dev Contract constructor.
-     constructor() public{
+     constructor(uint _Q0, uint _Q1) public{
         tvm.accept();
+        Q0 = _Q0;
+        Q1 = _Q1;
     }
-
     function encodeSignatureParams(uint r, uint s, uint x1, uint y1, uint x2, uint y2) external view returns (TvmCell){
         TvmCell encodedXYCoordinatesAndSingnature =  abi.encode(r,s,x1,y1,x2,y2);
         return encodedXYCoordinatesAndSingnature;
@@ -43,7 +44,13 @@ contract Wallet is EllipticCurve{
         return encodedUserOperation;
     }
 
-    
+    function checkQ1Q2(uint r, uint s, uint _x1, uint _y1) public view returns (bool){
+        tvm.accept();
+        uint256 sInv = inverseMod(s, n);
+        (uint x1, uint y1) = multiplyScalar(Q0, Q1, mulDivMod(r, sInv, n));
+        require(_x1==x1 && _y1==y1, 111);
+        return true;
+    }
 
     function validateSignature(TvmCell _userOpSignature) internal view returns(bool){
         tvm.accept();

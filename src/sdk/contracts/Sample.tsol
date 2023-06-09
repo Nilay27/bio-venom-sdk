@@ -1,41 +1,38 @@
-pragma ever-solidity >= 0.61.2;
+pragma ever-solidity >= 0.61.0;
 pragma AbiHeader expire;
 pragma AbiHeader pubkey;
+import "locklift/src/console.tsol";
+
 
 
 contract Sample {
     uint16 static _nonce;
 
     uint state;
-    uint tvmPubkey;
-    uint msgPubkey;
 
     event StateChange(uint _state);
 
     constructor(uint _state) public {
         tvm.accept();
-        setState(_state);
+        state = _state;
     }
 
-    function setState(uint _state) public {
+    function setState(uint _state  ) public {
         tvm.accept();
+        console.log(format("setState called with _state {} ", _state));
         state = _state;
-        tvmPubkey = tvm.pubkey();
-        msgPubkey = msg.pubkey();
+        // address std = address.makeAddrStd(0,0xe19dd0365f8d6d8d0c9c9d8f05b873427b7d517d1adb87005b286c7ce0df9240);
+        // TvmCell payload = tvm.encodeBody(Sample(std).setState, _state, _arbitData);
+        // std.transfer({value: 0, bounce: false, flag: 128, body: payload});
         emit StateChange(_state);
     }
 
     function getDetails()
         external
         view
-    returns (uint _state, uint _tvmPubkey, uint _msgPubkey)
-    {
-        return (state, tvmPubkey, msgPubkey);
-    }
-
-    function checkSignature(uint256 hash, TvmCell signature, uint256 pubkey) public pure{
-        TvmSlice signatureSlice = signature.toSlice();
-        bool signatureIsValid = tvm.checkSign(hash, signatureSlice, pubkey);
-        require(signatureIsValid, 101);
+    returns (
+        uint
+    ) {
+        return state;
     }
 }

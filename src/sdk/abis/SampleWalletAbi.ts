@@ -27,7 +27,6 @@ export const SampleWalletAbi = {
 		{
 			"name": "encodeUserOperation",
 			"inputs": [
-				{"name":"_nonceOp","type":"uint256"},
 				{"name":"_signatureOp","type":"cell"},
 				{"name":"_payloadOp","type":"cell"},
 				{"name":"_valueOp","type":"uint128"}
