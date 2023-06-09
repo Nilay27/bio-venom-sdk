@@ -2,7 +2,7 @@ import React from 'react';
 import {getCredential, getRSAndXYCoordinates} from '../../../sdk/webauthn/index'
 import { useState, useEffect } from 'react';
 import {SampleWalletAbi} from "../../abis/SampleWalletAbi"
-import { Address, ProviderRpcClient, TvmException } from 'everscale-inpage-provider';
+import { Address, ProviderRpcClient } from 'everscale-inpage-provider';
 import { EverscaleStandaloneClient } from 'everscale-standalone-client';
 
 const Transaction: React.FC = () => {

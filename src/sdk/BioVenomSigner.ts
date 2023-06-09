@@ -1,10 +1,7 @@
 import * as everScaleCrypto from "everscale-crypto"
 
-class VenomSigner{
+export class BioVenomSigner{
     constructor() {
     }
 
-    async generateKeyPair(){
-        
-    }
 }

@@ -16,7 +16,7 @@ contract Wallet is EllipticCurve{
         uint _nonce;
         TvmCell _signature;
         TvmCell _payload;
-        uint _value;
+        uint128 _value;
     }
     /*
      Exception codes:
@@ -24,7 +24,6 @@ contract Wallet is EllipticCurve{
       101 - invalid transfer value.
      */
      address ellipticCurve;
-     bool _signatureCheckInProgress;
 
      uint256 nonce;
 
@@ -33,19 +32,26 @@ contract Wallet is EllipticCurve{
         tvm.accept();
     }
 
-    function encodeParameters(uint r, uint s, uint x1, uint y1, uint x2, uint y2) external view returns (TvmCell){
+    function encodeSignatureParams(uint r, uint s, uint x1, uint y1, uint x2, uint y2) external view returns (TvmCell){
         TvmCell encodedXYCoordinatesAndSingnature =  abi.encode(r,s,x1,y1,x2,y2);
         return encodedXYCoordinatesAndSingnature;
     }
 
+    function encodeUserOperation(TvmCell _signatureOp, TvmCell _payloadOp, uint128 _valueOp) external view returns (TvmCell){
+        UserOperation userOp = UserOperation(nonce, _signatureOp, _payloadOp, _valueOp);
+        TvmCell encodedUserOperation =  abi.encode(userOp);
+        return encodedUserOperation;
+    }
+
     
 
-    function validate_signature(TvmCell _userOp_signature) public returns(bool){
+    function validateSignature(TvmCell _userOpSignature) internal view returns(bool){
+        tvm.accept();
         (uint r, uint s, uint x1, uint y1, uint x2, uint y2) = abi.decode(
-            _userOp_signature,
+            _userOpSignature,
             (uint, uint, uint, uint, uint ,uint)
         );
-        bool result = validate_signatureWithXY(r,s, x1, y1, x2, y2);
+        bool result = validateSignatureWithXY(r,s, x1, y1, x2, y2);
         return result;
     }
 
@@ -54,11 +60,16 @@ contract Wallet is EllipticCurve{
     /// @param dest Transfer target address.
     /// @param value Nanotons value to transfer.
     /// @param bounce Flag that enables bounce message in case of target contract error.
-    function sendTransaction(address dest, uint128 value, bool bounce, UserOperation userOp) external view {
-        require(validate_signature(userOp._signature), INVALID_SIGNATURE);
-        require(userOp._nonce == nonce, INVALID_NONCE);
+    function sendTransaction(address dest, uint128 value, bool bounce, TvmCell userOp) external  {
+        (uint _nonceOp, TvmCell _signatureOp, TvmCell _payloadOp, uint128 _valueOp) = abi.decode(
+            userOp,
+            (uint, TvmCell, TvmCell, uint128)
+        );
+        require(validateSignature(_signatureOp), INVALID_SIGNATURE);
+        require(_nonceOp == nonce, INVALID_NONCE);
+        tvm.accept();
          // Runtime function that allows to make a transfer with arbitrary settings.
-        dest.transfer({value: userOp._value, bounce: bounce, flag: 0, body: userOp._payload});
+        dest.transfer({value: value, bounce: bounce, flag: 0, body: _payloadOp});
         // to stop any kind of replay attacks
         nonce++;
     }

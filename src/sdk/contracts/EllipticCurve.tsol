@@ -1,7 +1,7 @@
 pragma ever-solidity >= 0.61.0;
 pragma AbiHeader expire;
 pragma ignoreIntOverflow;
-import "locklift/src/~console.tsol";
+import "locklift/src/console.tsol";
 
 /**
  * @title   EllipticCurve
@@ -462,19 +462,18 @@ contract EllipticCurve{
         return  sInv;
     }
 
-    function validateSignatureWithXY(uint256[2] rs, uint256 x1, uint256 y1, uint256 x2, uint256 y2) public view 
-    responsible returns (bool){
+    function validateSignatureWithXY(uint256 r, uint s, uint256 x1, uint256 y1, uint256 x2, uint256 y2) public view returns (bool){
         (uint256 addX, uint256 addY ) = add(x1, y1, x2, y2);
         uint256[3] P = toProjectivePoint(addX, addY);
 
         if (P[2] == 0) {
-            return {value: 0, bounce: true, flag: 64}false;
+            return false;
         }
 
         uint256 Px = inverseMod(P[2], p);
         Px = mulDivMod(P[0], mulDivMod(Px, Px, p), p);
 
-        return  {value: 0, bounce: true, flag: 64} Px % n == rs[0];
+        return  Px % n == r;
     }
 
     function returnModulo(uint256 x, uint256 y) public view returns(uint256){

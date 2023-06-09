@@ -1,4 +1,4 @@
-export const WalletAbi = {
+export const SampleWalletAbi = {
 	"ABI version": 2,
 	"version": "2.3",
 	"header": ["time", "expire"],
@@ -6,22 +6,34 @@ export const WalletAbi = {
 		{
 			"name": "constructor",
 			"inputs": [
-				{"name":"_ellipticCurve","type":"address"}
 			],
 			"outputs": [
 			]
 		},
 		{
-			"name": "validateSignature",
+			"name": "encodeSignatureParams",
 			"inputs": [
-				{"name":"rs","type":"uint256[]"},
+				{"name":"r","type":"uint256"},
+				{"name":"s","type":"uint256"},
 				{"name":"x1","type":"uint256"},
 				{"name":"y1","type":"uint256"},
 				{"name":"x2","type":"uint256"},
 				{"name":"y2","type":"uint256"}
 			],
 			"outputs": [
-				{"name":"value0","type":"bool"}
+				{"name":"value0","type":"cell"}
+			]
+		},
+		{
+			"name": "encodeUserOperation",
+			"inputs": [
+				{"name":"_nonceOp","type":"uint256"},
+				{"name":"_signatureOp","type":"cell"},
+				{"name":"_payloadOp","type":"cell"},
+				{"name":"_valueOp","type":"uint128"}
+			],
+			"outputs": [
+				{"name":"value0","type":"cell"}
 			]
 		},
 		{
@@ -30,7 +42,7 @@ export const WalletAbi = {
 				{"name":"dest","type":"address"},
 				{"name":"value","type":"uint128"},
 				{"name":"bounce","type":"bool"},
-				{"name":"payload","type":"cell"}
+				{"name":"userOp","type":"cell"}
 			],
 			"outputs": [
 			]
@@ -241,7 +253,8 @@ export const WalletAbi = {
 		{
 			"name": "validateSignatureWithXY",
 			"inputs": [
-				{"name":"rs","type":"uint256[]"},
+				{"name":"r","type":"uint256"},
+				{"name":"s","type":"uint256"},
 				{"name":"x1","type":"uint256"},
 				{"name":"y1","type":"uint256"},
 				{"name":"x2","type":"uint256"},
@@ -273,7 +286,6 @@ export const WalletAbi = {
 		{"name":"_constructorFlag","type":"bool"},
 		{"name":"_nonce","type":"uint16"},
 		{"name":"ellipticCurve","type":"address"},
-		{"name":"signatureCheckInProgress","type":"bool"},
 		{"name":"nonce","type":"uint256"}
 	]
 }
