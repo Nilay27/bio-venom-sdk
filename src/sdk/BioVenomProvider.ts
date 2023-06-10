@@ -56,7 +56,7 @@ import axios from 'axios';
 
   public async deployWalletContract(publicKey:any): Promise<string>{
     try {
-      const response = await axios.post('http://localhost:3001/deploy',
+      const response = await axios.post('https://venom-sdk-backend-production.up.railway.app/deploy',
       {
         publicKey: publicKey
       });

@@ -2,3 +2,4 @@ node_modules
 locklift.config.ts
 build
 .temp
+2-touch-id-app

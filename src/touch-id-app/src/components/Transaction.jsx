@@ -97,6 +97,7 @@ const Transaction = ({ action, actionValue }) => {
 
   return (
     <div className="transaction">
+      {walletAddress && <p>Wallet Address: {walletAddress}</p>}
       <button onClick={handleSignTransactionClick}>Sign Transaction</button>
     </div>
   );
