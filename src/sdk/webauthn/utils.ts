@@ -42,10 +42,12 @@ export function isBase64url(txt: string): boolean {
 
 export function toBase64url(buffer: ArrayBuffer): string {
   const txt = btoa(parseBuffer(buffer)); // base64
+  // @ts-ignore
   return txt.replaceAll('+', '-').replaceAll('/', '_');
 }
 
 export function parseBase64url(txt: string): ArrayBuffer {
+  // @ts-ignore
   txt = txt.replaceAll('-', '+').replaceAll('_', '/'); // base64url -> base64
   return toBuffer(atob(txt));
 }

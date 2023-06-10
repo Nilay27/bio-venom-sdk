@@ -10,6 +10,7 @@ import { parseAuthData, publicKeyCredentialToJSON } from './helpers';
 import { decode, encode } from './base64url-arraybuffer';
 import crypto from 'crypto';
 import { Buffer } from 'buffer/';
+// @ts-ignore
 window.Buffer = Buffer;
 import BN from 'bn.js';
 
@@ -48,7 +49,7 @@ export const createCredential = async (
   const publicKeyCredential =  await navigator.credentials.create({
     publicKey: {
       rp: {
-        id: "localhost",
+        id: window.location.hostname,
         name: 'Bio Venom Wallet',
       },
       user: {
@@ -127,7 +128,7 @@ export const getAuthenticatorBytes = (attestationObject: Buffer) => {
 
   return authDataParsed;
 };
-function toBase64(base64url) {
+function toBase64(base64url:any) {
   let padding = '';
   const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
   const length = base64.length % 4;
@@ -141,7 +142,7 @@ function toBase64(base64url) {
   return base64 + padding;
 }
 
-function toBuffer(base64url) {
+function toBuffer(base64url:any) {
   const base64 = toBase64(base64url);
   const binary = window.atob(base64);
   const bytes = new Uint8Array(binary.length);

@@ -1,15 +1,10 @@
 import React, { useState } from 'react';
 
-interface ActionBoxProps {
-  isSignedIn: boolean;
-  onAction: (action: string, value: string) => void;
-}
+const ActionBox = ({ isSignedIn, onAction }) => {
+  const [venomAddress, setVenomAddress] = useState('');
+  const [newState, setNewState] = useState(null);
 
-const ActionBox: React.FC<ActionBoxProps> = ({ isSignedIn, onAction }) => {
-  const [venomAddress, setVenomAddress] = useState<string>('');
-  const [newState, setNewState] = useState<number | null>(null);
-
-  const handleVenomAddressChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleVenomAddressChange = (event) => {
     const value = event.target.value;
     setVenomAddress(value);
     if (value !== '') {
@@ -18,7 +13,7 @@ const ActionBox: React.FC<ActionBoxProps> = ({ isSignedIn, onAction }) => {
     onAction('sendVenom', value);
   };
   
-  const handleNewStateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNewStateChange = (event) => {
     const value = parseInt(event.target.value);
     setNewState(isNaN(value) ? null : value);
     if (!isNaN(value)) {

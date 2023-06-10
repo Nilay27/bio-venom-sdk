@@ -2,35 +2,27 @@
   "name": "touch-id-app",
   "private": true,
   "version": "0.0.0",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "dev": "vite --host",
-    "build": "tsc && vite build",
-    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "build": "vite build",
+    "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
-    "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
-    "buffer": "^6.0.3",
-    "Buffer": "^0.0.0",
+    "everscale-standalone-client": "^2.1.19",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "rollup-plugin-polyfill-node": "^0.12.0",
-    "vite-plugin-notifier": "^0.1.5"
+    "rollup-plugin-polyfill-node": "^0.12.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.37",
     "@types/react-dom": "^18.0.11",
-    "@typescript-eslint/eslint-plugin": "^5.59.0",
-    "@typescript-eslint/parser": "^5.59.0",
     "@vitejs/plugin-react": "^4.0.0",
     "eslint": "^8.38.0",
+    "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
-    "everscale-standalone-client": "^2.1.19",
-    "locklift": "^2.5.5",
-    "typescript": "^5.0.2",
     "vite": "^4.3.9"
   }
 }
