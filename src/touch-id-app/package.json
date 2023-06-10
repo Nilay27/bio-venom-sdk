@@ -13,7 +13,8 @@
     "everscale-standalone-client": "^2.1.19",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "rollup-plugin-polyfill-node": "^0.12.0"
+    "rollup-plugin-polyfill-node": "^0.12.0",
+    "sass": "^1.63.3"
   },
   "devDependencies": {
     "@types/react": "^18.0.37",

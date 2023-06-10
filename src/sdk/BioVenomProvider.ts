@@ -7,27 +7,27 @@ import axios from 'axios';
 
 
   export class BioVenomProvider {
-  private provider: ProviderRpcClient;
+  private provider?: ProviderRpcClient;
   private walletAbi: any;
   private signer: BioVenomSigner;
   private walletContract: any;
   private unsignedUserOp:any;
 
   constructor() {
-    this.provider = new ProviderRpcClient({
-      forceUseFallback: true,
-      fallback: () => EverscaleStandaloneClient.create({
-        connection: {
-          id: 1002, // network id
-          group: "dev",
-          type: 'jrpc',
-          data: {
-            endpoint: "https://jrpc-devnet.venom.foundation/rpc",
-          },
-        },
-        initInput: '../../node_modules/nekoton-wasm/nekoton_wasm_bg.wasm',
-      }),
-    });
+    // this.provider = new ProviderRpcClient({
+    //   forceUseFallback: true,
+    //   fallback: () => EverscaleStandaloneClient.create({
+    //     connection: {
+    //       id: 1002, // network id
+    //       group: "dev",
+    //       type: 'jrpc',
+    //       data: {
+    //         endpoint: "https://jrpc-devnet.venom.foundation/rpc",
+    //       },
+    //     },
+    //     initInput: '../../node_modules/nekoton-wasm/nekoton_wasm_bg.wasm',
+    //   }),
+    // });
     this.walletAbi = SampleWalletAbi;
     this.signer = new BioVenomSigner();
   }
@@ -38,7 +38,22 @@ import axios from 'axios';
 
   public getAnyWalletContract(address: string) {
     const contractAddress = new Address(address);
-    const contract = new this.provider.Contract(this.walletAbi, contractAddress);
+    const Provider = new ProviderRpcClient({
+      forceUseFallback: true,
+      fallback: () =>
+        EverscaleStandaloneClient.create({
+          connection: {
+            id: 1002, // network id
+            group: "dev",
+            type: 'jrpc',
+            data: {
+              endpoint: "https://jrpc-devnet.venom.foundation/rpc",
+            },
+          },
+          initInput: '../../node_modules/nekoton-wasm/nekoton_wasm_bg.wasm',
+        }),
+    });
+    const contract = new Provider.Contract(this.walletAbi, contractAddress);
     return contract;
   }
 
