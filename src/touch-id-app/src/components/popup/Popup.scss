@@ -1,0 +1,219 @@
+.popover-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.popover-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.popover-to-container, .popover-from-container, .popover-message-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 1px;
+    }
+    
+    
+    
+
+.popover {
+    background-color: white;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    padding: 20px;
+    width: 400px;
+    height: 500px;
+    overflow: auto;
+    background: linear-gradient(to right, white, rgb(82, 72, 72), #0f4647);
+    opacity: 0.98;
+}
+
+.popover *{
+    
+}
+
+.popover-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .popover-header img {
+    height: 75px;
+    width: 75px;
+    padding: 0.5em 0.5em;
+    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+    border-radius: 50%;
+  }
+  
+  .popover-header img:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  }
+  
+
+
+.popover .popover-amount{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 40px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.popover-to-container{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    border-top: 2px solid #ccc;
+}
+
+.popover-to-container h2 {
+   
+    margin-right: 10px;
+
+}
+
+.popover-to-container h3 {
+    margin-left: 10px;
+    justify-content: end;
+}
+
+
+
+.footer-gas-fee{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #ccc;
+    margin-top: 10px;
+}
+
+.footer-gas-fee h2 {
+    margin-right: 10px;
+}
+
+.footer-gas-fee h3 {
+    margin-left: 10px;
+    justify-content: end;
+}
+
+.footer-message p{
+    margin-top: 0px;
+}
+
+.footer-total {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 0px;
+}
+
+.footer-total h2 {
+    margin-right: 10px;
+}
+
+.footer-total h3 {
+    margin-left: 10px;
+    justify-content: end;
+    
+}
+.popover-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.popover-buttons button{
+    position: relative;
+  display: inline-block;
+  padding: 0.75em 1.5em;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  background-color: rgba(0,0,0,0.3);
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+  font-size: 1.2em;
+  font-weight: bold;
+  opacity: 0.9;
+  transition: all 0.3s ease;
+}
+
+.popover-buttons button:hover {
+    opacity: 1;
+    transform: translateY(-3px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.19), 0 16px 16px rgba(0,0,0,0.23);
+  }
+  
+  .popover-buttons button:active {
+    transform: translateY(3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  }
+  
+  .popover-buttons button:focus {
+    outline: none;
+  }
+
+.popover-buttons .popover-confirm-button {
+    background-color: #0f4647;
+    color: white;
+    font-weight: bold;
+    border-radius: 10px;
+    height: 50px;
+    width: 150px;
+    text-align: center;
+    margin-left: 10px;
+    font-size: 20px;
+}
+
+.popover-buttons .popover-reject-button {
+    background-color: white;
+    color: blue;
+    border: 2px solid blue;
+    border-radius: 10px;
+    height: 50px;
+    width: 150px;
+    text-align: center;
+    margin-left: 10px;
+    font-size: 20px;
+}
+
+
+.popover .popover-information{
+    position: relative;
+    padding: 0.75em 1.5em;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    background-color: rgba(0,0,0,0.3);
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    opacity: 0.9;
+    transition: all 0.3s ease;
+}
+
+.popover-information:hover {
+    opacity: 1;
+    transform: translateY(-3px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.19), 0 16px 16px rgba(0,0,0,0.23);
+  }
