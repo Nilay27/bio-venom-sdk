@@ -1,15 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap');
+html, body {
+  margin: 0;
+  padding: 0;
+}
 .app {
+  font-family: 'Open Sans', sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  background-image: url('../public/BioVenom.png');
+  background-repeat: no-repeat;
+  background-size: cover;
 }
+
 
 .sign-in,
 .transaction {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+.sdk-name{
+  color: white;
 }
 
 input {
@@ -28,5 +41,72 @@ button {
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #194401;
+}
+
+ .action-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 350px;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 4px 6px 0 hsla(0, 0%, 0%, 0.07);
+  background-color: #ffffff;
+}
+
+.action-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.action-item:last-child {
+  margin-bottom: 0;
+}
+
+.action-item label {
+  font-size: 16px;
+  color: #000000;
+}
+
+.action-item input {
+  width: 200px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #d6d6d6;
+  font-size: 16px;
+  color: #000000;
+}
+
+.action-item input:disabled {
+  background-color: #f0f0f0;
+}
+
+.loading-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

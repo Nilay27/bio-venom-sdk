@@ -3,13 +3,19 @@ import {getCredential, getRSAndXYCoordinates} from '../../../sdk/webauthn/index'
 import { useState, useEffect } from 'react';
 import {SampleWalletAbi} from "../../abis/SampleWalletAbi"
 import {StateContractAbi} from "../../abis/StateContractAbi"
+import {VenomWalletAbi} from "../../abis/VenomWalletAbi"
 import { Address, ProviderRpcClient } from 'everscale-inpage-provider';
 import { EverscaleStandaloneClient } from 'everscale-standalone-client';
 import { BioVenomProvider } from '../../../sdk/BioVenomProvider';
 /** State contract address on devnet: 
  * 0:26e36bfd887de7b8b4b8b21155bc073403b8ef264c8de2f72636166b846dc375
 */
-const Transaction: React.FC = () => {
+interface TransactionProps {
+  action: string;
+  actionValue: string;
+}
+
+const Transaction: React.FC<TransactionProps> = ({ action, actionValue }) => {
     const [username, setUsername] = useState<string>('');
     const [encodedId, setEncodedId] = useState<string>('');
     const [Provider, setProvider] = useState<any>('');
@@ -19,28 +25,45 @@ const Transaction: React.FC = () => {
     const [stateContract, setStateContract] = useState<any>('');
     const [bioVenomInstance, setBioVenomInstance] = useState<BioVenomProvider>(new BioVenomProvider());
 
-  const createEncodedPayload = async (newState:number = 52) => {
-    const stateContractAddressString = "0:26e36bfd887de7b8b4b8b21155bc073403b8ef264c8de2f72636166b846dc375"
-    const StateContractAddress = new Address(stateContractAddressString)
-    const StateContract = new Provider.Contract(StateContractAbi, StateContractAddress);
-    setStateContract(StateContract);
-    console.log("state contract address", StateContract.address.toString())
-    const payload = await StateContract.methods.setState({_state: newState}).encodeInternal();
-    return payload;
-  }
+
+    const createEncodedPayload = async (newState:number = 0) => {
+      const stateContractAddressString = "0:26e36bfd887de7b8b4b8b21155bc073403b8ef264c8de2f72636166b846dc375"
+      const StateContractAddress = new Address(stateContractAddressString)
+      const StateContract = new Provider.Contract(StateContractAbi, StateContractAddress);
+      setStateContract(StateContract);
+      console.log("state contract address", StateContract.address.toString())
+      const payload = await StateContract.methods.setState({_state: newState}).encodeInternal();
+      return payload;
+    }
+  
 
   const handleSignTransactionClick = async () => {
+    let encodedPayload = '';
+    let unsignedUserOp = '';
     const WalletAddress = new Address(walletAddress)
     const WalletContract = new Provider.Contract(SampleWalletAbi, WalletAddress);
+    bioVenomInstance.setWalletContract(walletAddress);
+
     console.log("walletAddress", WalletContract.address.toString())
-    const encodedPayload = await createEncodedPayload();
-    bioVenomInstance.setWalletContract(walletAddress)
-    const unsignedUserOp = await bioVenomInstance.createUnsignedUserOp(encodedPayload)
-    const signedTVMCellUserOp = await bioVenomInstance.signTvmCellUserOp(unsignedUserOp, encodedId, publicKey)
-    console.log("state contract address in signTransaction", stateContract.address.toString())
-    const output = await bioVenomInstance.executeTransaction(stateContract.address, signedTVMCellUserOp,
+    if (action === 'sendVenom') {
+      // call function to send venom with actionValue
+      const venomWalletAdd = new Address(actionValue);
+      const venomWalletContract = new Provider.Contract(VenomWalletAbi, venomWalletAdd);
+      unsignedUserOp = await bioVenomInstance.createUnsignedUserOp(encodedPayload);
+      const signedTVMCellUserOp = await bioVenomInstance.signTvmCellUserOp(unsignedUserOp, encodedId, publicKey)
+      const output = await bioVenomInstance.executeTransaction(venomWalletContract.address, signedTVMCellUserOp,
+        100000000);
+      console.log("output", output)
+    } else if (action === 'changeState') {
+      // call function to change state with actionValue
+      encodedPayload = await createEncodedPayload(parseInt(actionValue));
+      unsignedUserOp = await bioVenomInstance.createUnsignedUserOp(encodedPayload, parseInt(actionValue));
+      const signedTVMCellUserOp = await bioVenomInstance.signTvmCellUserOp(unsignedUserOp, encodedId, publicKey)
+      console.log("state contract address in signTransaction", stateContract.address.toString())
+      const output = await bioVenomInstance.executeTransaction(stateContract.address, signedTVMCellUserOp,
       5000000);
-    console.log("output", output)
+      console.log("output", output)
+    }
   };
 
   // useEffect to get the publicKeyCredential from localStorage and set it to state
