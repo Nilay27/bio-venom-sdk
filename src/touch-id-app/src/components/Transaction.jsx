@@ -50,7 +50,7 @@ const Transaction = ({ action, actionValue }) => {
       setStateContract(StateContract);
       console.log("state contract address", StateContract.address.toString())
       const payload = await StateContract.methods.setState({_state: newState}).encodeInternal();
-      return payload;
+      return {payload, StateContract};
     }
 
     const handleWalletAddressClick = () => {
@@ -99,11 +99,11 @@ const Transaction = ({ action, actionValue }) => {
         console.log("output", output)
       } else if (action === 'changeState') {
         // call function to change state with actionValue
-        encodedPayload = await createEncodedPayload(parseInt(actionValue));
-        unsignedUserOp = await bioVenomInstance.createUnsignedUserOp(encodedPayload, parseInt(actionValue));
+        const {payload, StateContract} = await createEncodedPayload(parseInt(actionValue));
+        unsignedUserOp = await bioVenomInstance.createUnsignedUserOp(payload, parseInt(actionValue));
         const signedTVMCellUserOp = await bioVenomInstance.signTvmCellUserOp(unsignedUserOp, encodedId, publicKey)
-        console.log("state contract address in signTransaction", stateContract)
-        const output = await bioVenomInstance.executeTransaction(stateContract.address, signedTVMCellUserOp,
+        console.log("state contract address in signTransaction", StateContract.address.toString())
+        const output = await bioVenomInstance.executeTransaction(StateContract.address, signedTVMCellUserOp,
         5000000);
         console.log("output", output)
       }
