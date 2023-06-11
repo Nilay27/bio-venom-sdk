@@ -12,9 +12,9 @@ BioVenomSdk includes the following modules:
 
 ### WebAuthn Module
 
-This module is used to manage and generate credentials from the secure enclave of your device. Notably, the **signature generated from the secure enclave follows the P256 (or secp256r1) based signatures**, which differs from the native signature scheme that **Venom Supports (ED25519)**. Thus, the signature needs to be verified on smart contracts.
+This module is used to manage and generate credentials from the secure enclave of your device. Notably, the **`signature generated from the secure enclave follows the P256 (or secp256r1) based signatures`**, which differs from the native signature scheme that **`Venom Supports (ED25519)`**. Thus, the signature needs to be verified on smart contracts.
 
-An important feature to highlight is the **Venom's native support for account abstraction**. This feature enables us to attach the signature as a function argument and then send the transaction without signing it with an ED25519 based Signature, demonstrating the adaptability of our solution.
+An important feature to highlight is the **`Venom's native support for account abstraction`**. This feature enables us to attach the signature as a function argument and then send the transaction without signing it with an ED25519 based Signature, demonstrating the adaptability of our solution.
 
 ### BioVenomProvider
 
@@ -24,7 +24,7 @@ BioVenomProvider is the central module to manage signatures, send transactions t
 
 The BioVenomProvider class offers various methods for interacting with the Venom network.
 
-#### `instance creation`
+### Instance Creation
 ```javascript
  const bioVenomProvider = new BioVenomProvider()
 ```
@@ -82,3 +82,17 @@ Calls the sendTransaction method in the smart contract with all the data along w
 let transactionPromise = bioVenomProvider.executeTransaction("Destination Address Here", signedUserOp, "Value Here");
 ```
 These methods provide a comprehensive interface for managing and interacting with your contracts on the Venom network. As this project evolves, more functionality and utility will be added to this core class.
+
+## BioVenomSigner Class
+
+BioVenomSigner is responsible for signing the Partial Unsigned User Operation. It sends the `userOp` to the secure enclave for signing for the corresponding Public Key and unique credential mapping, and then returns the `secp256r1` based signature along with the `hash of the message` that was signed.
+
+### Method
+
+#### 1. `sign`
+
+This method accepts an `unsignedUserOperation`, an `encodedId` that serves as a unique credential mapping, and a `pubkey` as arguments. It calls the webauthn API inside the [WebAuthn](./webauthn) module to generate a signature and returns the signature `(r,s)` and `(X,Y)` coordinates of the signed message multiplied by the `Generator Point of P256 curve and the Public Key`.
+
+```javascript
+const bioVenomSigner = new BioVenomSigner();
+const signedMessage = bioVenomSigner.sign(unsignedUserOperation, encodedId, pubkey);
