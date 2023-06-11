@@ -12,7 +12,7 @@ BioVenomSdk includes the following modules:
 
 ### WebAuthn Module
 
-This module is used to manage and generate credentials from the secure enclave of your device. Notably, the **`signature generated from the secure enclave follows the P256 (or secp256r1) based signatures`**, which differs from the native signature scheme that **`Venom Supports (ED25519)`**. Thus, the signature needs to be verified on smart contracts.
+This [WebAuthn](https://github.com/Nilay27/bio-venom-sdk/tree/main/src/sdk/webauthn) module is used to manage and generate credentials from the secure enclave of your device. Notably, the **`signature generated from the secure enclave follows the P256 (or secp256r1) based signatures`**, which differs from the native signature scheme that **`Venom Supports (ED25519)`**. Thus, the signature needs to be verified on smart contracts.
 
 An important feature to highlight is the **`Venom's native support for account abstraction`**. This feature enables us to attach the signature as a function argument and then send the transaction without signing it with an ED25519 based Signature, demonstrating the adaptability of our solution.
 
@@ -91,7 +91,7 @@ BioVenomSigner is responsible for signing the Partial Unsigned User Operation. I
 
 #### 1. `sign`
 
-This method accepts an `unsignedUserOperation`, an `encodedId` that serves as a unique credential mapping, and a `pubkey` as arguments. It calls the webauthn API inside the [WebAuthn](./webauthn) module to generate a signature and returns the signature `(r,s)` and `(X,Y)` coordinates of the signed message multiplied by the `Generator Point of P256 curve and the Public Key`.
+This method accepts an `unsignedUserOperation`, an `encodedId` that serves as a unique credential mapping, and a `pubkey` as arguments. It calls the webauthn API inside the [WebAuthn](https://github.com/Nilay27/bio-venom-sdk/tree/main/src/sdk/webauthn) module to generate a signature and returns the signature `(r,s)` and `(X,Y)` coordinates of the signed message multiplied by the `Generator Point of P256 curve and the Public Key`.
 
 ```javascript
 const bioVenomSigner = new BioVenomSigner();
