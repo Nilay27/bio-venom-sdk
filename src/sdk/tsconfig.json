@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+      "target": "es2021",
+      "outDir": "lib",
+      "declaration": true,
+      "esModuleInterop": true,
+      "moduleResolution": "node",
+      "experimentalDecorators": true,
+      "sourceMap": true
+    },
+    "include": [
+      "webauthn/**/*.ts",
+      "./*.ts"
+, "main.js"    ]
+}

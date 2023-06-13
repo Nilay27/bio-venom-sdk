@@ -8,7 +8,7 @@ import * as utils from './utils';
 import { v4 as uuidv4 } from 'uuid';
 import { parseAuthData, publicKeyCredentialToJSON } from './helpers';
 import { decode, encode } from './base64url-arraybuffer';
-import crypto from 'crypto';
+import * as CryptoJS from 'crypto-js';
 import { Buffer } from 'buffer/';
 // @ts-ignore
 window.Buffer = Buffer;
@@ -29,7 +29,7 @@ export enum COSEKEYS {
 }
 
 export function toHash(data: any, algo = 'SHA256') {
-  return crypto.createHash(algo).update(data).digest();
+  return CryptoJS.SHA256(data).toString();
 }
 
 export function shouldRemoveLeadingZero(bytes: Uint8Array): boolean {
@@ -102,6 +102,7 @@ export const getPublicKey = async (attestationObject: Buffer) => {
   let authDataParsed = parseAuthData(authData);
 
   let pubk = cbor.decode(
+    // @ts-ignore
     authDataParsed.COSEPublicKey.buffer,
     undefined,
     undefined

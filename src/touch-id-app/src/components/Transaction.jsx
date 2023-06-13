@@ -1,17 +1,26 @@
 import React from 'react';
-import {getCredential, getRSAndXYCoordinates} from '../../../sdk/webauthn/index'
-import {SampleWalletAbi} from "../../abis/SampleWalletAbi"
-import {StateContractAbi} from "../../abis/StateContractAbi"
-import {VenomWalletAbi} from "../../abis/VenomWalletAbi"
+import {SampleWalletAbi} from "../abis/SampleWalletAbi"
+import {StateContractAbi} from "../abis/StateContractAbi"
+import {VenomWalletAbi} from "../abis/VenomWalletAbi"
 import { Address, ProviderRpcClient } from 'everscale-inpage-provider';
 import { EverscaleStandaloneClient } from 'everscale-standalone-client';
-import { BioVenomProvider } from '../../../sdk/BioVenomProvider';
+import { BioVenomProvider } from "bio-venom-sdk/lib/BioVenomProvider";
 import TransactionPopover from "./popup/index"
 
 
-const Transaction = ({ action, actionValue }) => {
+const Transaction = ({ action, actionValue, handleTxReload }) => {
     const [username, setUsername] = React.useState('');
     const [encodedId, setEncodedId] = React.useState('');
+    const [WalletContract, setWalletContract] = React.useState('');
+    const [walletAddress, setWalletAddress] = React.useState('');
+    const [publicKey, setPublicKey] = React.useState('');
+    const [stateContract, setStateContract] = React.useState('');
+    const [bioVenomInstance, setBioVenomInstance] = React.useState(new BioVenomProvider());
+    const [showPopover, setShowPopover] = React.useState(false);
+    const [amount, setAmount] = React.useState(0.1);
+    const [toAddress, setToAddress] = React.useState('');
+    const [message, setMessage] = React.useState('');
+    const [transactionInProgress, setTransactionInProgress] = React.useState(false);
     const [Provider, setProvider] = React.useState(new ProviderRpcClient({
       forceUseFallback: true,
       fallback: () =>
@@ -23,23 +32,29 @@ const Transaction = ({ action, actionValue }) => {
             data: {
               endpoint: "https://jrpc-devnet.venom.foundation/rpc",
             },
-          },
-          initInput: '../../node_modules/nekoton-wasm/nekoton_wasm_bg.wasm',
+          }
         }),
     }));
-    const [WalletContract, setWalletContract] = React.useState('');
-    const [walletAddress, setWalletAddress] = React.useState('');
-    const [publicKey, setPublicKey] = React.useState('');
-    const [stateContract, setStateContract] = React.useState('');
-    const [bioVenomInstance, setBioVenomInstance] = React.useState(new BioVenomProvider());
-    const [showPopover, setShowPopover] = React.useState(false);
-    const [amount, setAmount] = React.useState(0.1);
-    const [toAddress, setToAddress] = React.useState('');
-    const [message, setMessage] = React.useState('');
+
 
 
 
     const createEncodedPayload = async (newState = 0) => {
+      const Provider = new ProviderRpcClient({
+        forceUseFallback: true,
+        fallback: () =>
+          EverscaleStandaloneClient.create({
+            connection: {
+              id: 1002, // network id
+              group: "dev",
+              type: 'jrpc',
+              data: {
+                endpoint: "https://jrpc-devnet.venom.foundation/rpc",
+              },
+            },
+            
+          }),
+      });
       if (Provider === null ) {
         setHtppProvider();
         setHtppProvider();
@@ -70,11 +85,10 @@ const Transaction = ({ action, actionValue }) => {
                 endpoint: "https://jrpc-devnet.venom.foundation/rpc",
               },
             },
-            initInput: '../../node_modules/nekoton-wasm/nekoton_wasm_bg.wasm',
+            
           }),
       });
       console.log("Provider", Provider)
-      setProvider(Provider);
     }
 
     const handleSignTransactionClick = async () => {
@@ -122,16 +136,34 @@ const Transaction = ({ action, actionValue }) => {
       setShowPopover(true);
     }
 
+    const handleSignout = () => {
+      localStorage.setItem('hasReloaded', 'false');
+      window.location.reload();
+    }
+
     const handleConfirm = async (result) => {
       if(result) {
-        await handleSignTransactionClick()
+        setShowPopover(false);
+        setTransactionInProgress(true); // Start showing the loader
+        await handleSignTransactionClick();
+        setTransactionInProgress(false); // Stop showing the loader
       } else{
         setShowPopover(false);
       }
     }
 
     React.useEffect(() => {
-        const username = localStorage.getItem("username");
+      const username = localStorage.getItem('username');
+      if (username && localStorage.getItem('hasReloaded') !== 'true') {
+        handleTxReload()
+        localStorage.setItem('hasReloaded', 'true');
+        console.log("reloading")
+        setTimeout(() => window.location.reload(), 500); // wait half a second before reload
+        console.log("reloaded")
+      }
+      // if (username && localStorage.getItem('hasReloaded') === 'true'){
+      //   localStorage.setItem('hasReloaded', 'false');
+      // }
         console.log("username", username);
         if(username) {
           setUsername(username);
@@ -160,6 +192,13 @@ const Transaction = ({ action, actionValue }) => {
       Wallet deployed: {walletAddress.substring(0,6)}...{walletAddress.substring(walletAddress.length - 3, walletAddress.length)}
     </button>}
       <button onClick={handleTransaction}>Sign Transaction</button>
+      <button onClick={handleSignout}>Signout</button>
+      {transactionInProgress && (
+        <div className="loading-modal">
+          <div className="loading-spinner"></div>
+          <h3>Processing your txn, check wallet address for details once it's done</h3>
+        </div>
+      )}
       <div>
         {showPopover && (<TransactionPopover  from={walletAddress}
                         to={toAddress}
