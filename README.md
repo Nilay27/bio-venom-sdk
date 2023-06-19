@@ -1,6 +1,6 @@
 <h1>
   <img src="https://raw.githubusercontent.com/Nilay27/bio-venom-sdk/main/src/touch-id-app/public/BioVenom.png" alt="BioVenom Logo" width="32" height="32">
-  BioVenomSdk
+  BioVenomSdk-Vite-ISSUE
 </h1>
 Presenting an innovative solution designed to transform user engagement with the Venom Network - a Biometric Based onboarding of users realized through a versatile SDK that can be seamlessly integrated into any web-based DApp.
 
