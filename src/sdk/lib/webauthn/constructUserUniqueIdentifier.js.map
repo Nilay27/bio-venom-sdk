@@ -1,0 +1,1 @@
+{"version":3,"file":"constructUserUniqueIdentifier.js","sourceRoot":"","sources":["../../webauthn/constructUserUniqueIdentifier.ts"],"names":[],"mappings":"AAAA,MAAM,yBAAyB,GAAG,CAAC,UAAkB,EAAE,QAAgB,EAAE,EAAE;IACvE,OAAO,UAAU,GAAG,QAAQ,CAAC;AACjC,CAAC,CAAA;AAED,eAAe,yBAAyB,CAAA"}

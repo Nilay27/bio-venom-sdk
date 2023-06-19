@@ -32,9 +32,9 @@ import axios from 'axios';
     this.signer = new BioVenomSigner();
   }
 
-  public getProvider(): ProviderRpcClient {
-    return this.provider;
-  }
+  // public getProvider(): ProviderRpcClient {
+  //   return this.provider;
+  // }
 
   public getAnyWalletContract(address: string) {
     const contractAddress = new Address(address);
@@ -65,9 +65,9 @@ import axios from 'axios';
     return this.walletContract;
   }
 
-  public getExpectedContractAddress(deployParams: any) {
-    return this.provider.getExpectedAddress(this.walletAbi, deployParams)
-  }
+  // public getExpectedContractAddress(deployParams: any) {
+  //   return this.provider.getExpectedAddress(this.walletAbi, deployParams)
+  // }
 
   public async deployWalletContract(publicKey:any): Promise<string>{
     try {

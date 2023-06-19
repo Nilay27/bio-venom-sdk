@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { createCredential, getPublicKey } from '../../../sdk/webauthn/index';
-import { encode } from '../../../sdk/webauthn/base64url-arraybuffer';
-import { BioVenomProvider } from "../../../sdk/BioVenomProvider"
+import React, { useState, useEffect } from 'react';
+import { createCredential, getPublicKey } from 'bio-venom-sdk/lib/webauthn/index';
+import { encode } from 'bio-venom-sdk/lib/webauthn/base64url-arraybuffer';
+import { BioVenomProvider } from "bio-venom-sdk/lib/BioVenomProvider"
 
 const SignIn = ({ onSignIn }) => {
   const [username, setUsername] = useState('');
@@ -17,6 +17,25 @@ const SignIn = ({ onSignIn }) => {
     setShowSignIn(true);
     setShowInput(true);
   };
+
+  // // This function could be used to auto sign in
+  // const autoSignIn = async (storedUsername) => {
+  //   const storedCredentials = localStorage.getItem(storedUsername);
+    
+  //   if (storedCredentials) {
+  //     console.log(`Credentials for ${storedUsername} already exist.`);
+  //     onSignIn(storedUsername);
+  //   }
+  // };
+
+  useEffect(() => {
+    const hasReloaded = localStorage.getItem('hasReloaded');
+    const storedUsername = localStorage.getItem('username');
+    if(hasReloaded === "true") {
+      setUsername(storedUsername);
+      onSignIn();
+    }
+  }, []); 
 
   const handleSignInClick = async () => {
     const storedCredentials = localStorage.getItem(username);
