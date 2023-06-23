@@ -43,6 +43,7 @@ const SignIn = ({ onSignIn }) => {
     if (storedCredentials) {
       console.log(`Credentials for ${username} already exist.`);
     } else {
+      // TODO: abstract away registration logic to BioVenomProvider
       const publicKeyCredential = await createCredential(username);
       const publicKey = await getPublicKey(publicKeyCredential.response.attestationObject);
       console.log("username", username);
