@@ -64,7 +64,7 @@ const SignIn = ({ onSignIn }) => {
       {loading && (
         <div className="loading-modal">
           <div className="loading-spinner"></div>
-          <h3>Deploying And Prefunding your Wallet...</h3>
+          <h3>Deploying And Prefunding your Wallet with 0.05 Venom...</h3>
         </div>
       )}
       {
