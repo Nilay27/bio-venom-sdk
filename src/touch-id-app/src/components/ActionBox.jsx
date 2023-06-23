@@ -25,7 +25,7 @@ const ActionBox = ({ isSignedIn, onAction }) => {
   return (
     <div className="action-box">
       <div className="action-item">
-        <label> <b>Send 0.1 Venom</b></label>
+        <label> <b>Send 0.01 Venom</b></label>
         <input type="text" placeholder="Enter Address" disabled={!isSignedIn || newState !== null} value={venomAddress} onChange={handleVenomAddressChange} />
       </div>
       <div className="action-item">

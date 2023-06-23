@@ -95,7 +95,7 @@ const Transaction = ({ action, actionValue }) => {
         unsignedUserOp = await bioVenomInstance.createUnsignedUserOp(encodedPayload);
         const signedTVMCellUserOp = await bioVenomInstance.signTvmCellUserOp(unsignedUserOp, encodedId, publicKey)
         const output = await bioVenomInstance.executeTransaction(venomWalletContract.address, signedTVMCellUserOp,
-            100000000);
+            10000000);
         console.log("output", output)
       } else if (action === 'changeState') {
         // call function to change state with actionValue
@@ -104,7 +104,7 @@ const Transaction = ({ action, actionValue }) => {
         const signedTVMCellUserOp = await bioVenomInstance.signTvmCellUserOp(unsignedUserOp, encodedId, publicKey)
         console.log("state contract address in signTransaction", StateContract.address.toString())
         const output = await bioVenomInstance.executeTransaction(StateContract.address, signedTVMCellUserOp,
-        5000000);
+        1000000);
         console.log("output", output)
       }
       setShowPopover(false);
