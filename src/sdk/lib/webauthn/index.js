@@ -36,7 +36,9 @@ export const createCredential = async (username) => {
     console.log('createCredential reached with username', username);
     // const userId = await utils.sha256(new TextEncoder().encode(username));
     const userId = utils.parseBase64url(uuidv4());
-    const pubKeyCredParams = { type: 'public-key', alg: -8 };
+    const pubKeyCredParams = { type: 'public-key', alg: -7 };
+    const isPlatformSupported = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+    const authenticationSupport = isPlatformSupported ? 'platform' : 'cross-platform';
     console.log('pubKeyCredParams', pubKeyCredParams);
     console.log('userId', userId);
     const publicKeyCredential = await navigator.credentials.create({
@@ -55,7 +57,7 @@ export const createCredential = async (username) => {
             attestation: 'none',
             authenticatorSelection: {
                 userVerification: 'required',
-                authenticatorAttachment: 'platform',
+                authenticatorAttachment: authenticationSupport,
             },
         },
     });
