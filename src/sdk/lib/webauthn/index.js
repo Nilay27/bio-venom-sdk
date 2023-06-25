@@ -36,6 +36,8 @@ export const createCredential = async (username) => {
     console.log('createCredential reached with username', username);
     // const userId = await utils.sha256(new TextEncoder().encode(username));
     const userId = utils.parseBase64url(uuidv4());
+    const pubKeyCredParams = { type: 'public-key', alg: -8 };
+    console.log('pubKeyCredParams', pubKeyCredParams);
     console.log('userId', userId);
     const publicKeyCredential = await navigator.credentials.create({
         publicKey: {
@@ -49,7 +51,7 @@ export const createCredential = async (username) => {
                 displayName: username,
             },
             challenge: utils.parseBase64url(uuidv4()),
-            pubKeyCredParams: [{ type: 'public-key', alg: -7 }],
+            pubKeyCredParams: [pubKeyCredParams],
             attestation: 'none',
             authenticatorSelection: {
                 userVerification: 'required',

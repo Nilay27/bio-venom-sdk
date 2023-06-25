@@ -5,6 +5,7 @@ export declare class BioVenomProvider {
     private signer;
     private walletContract;
     private unsignedUserOp;
+    private cookie;
     constructor();
     getAnyWalletContract(address: string): Contract<any>;
     setWalletContract(address: string): void;

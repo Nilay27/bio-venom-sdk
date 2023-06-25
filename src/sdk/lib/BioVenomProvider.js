@@ -3,6 +3,7 @@ import { Address, ProviderRpcClient } from 'everscale-inpage-provider';
 import { EverscaleStandaloneClient } from 'everscale-standalone-client';
 import { SampleWalletAbi } from "./abis/SampleWalletAbi";
 import { BioVenomSigner } from "./BioVenomSigner";
+import { BioVenomCookie } from './BioVenomCookie';
 import axios from 'axios';
 export class BioVenomProvider {
     constructor() {
@@ -22,6 +23,7 @@ export class BioVenomProvider {
         // });
         this.walletAbi = SampleWalletAbi;
         this.signer = new BioVenomSigner();
+        this.cookie = new BioVenomCookie();
     }
     // public getProvider(): ProviderRpcClient {
     //   return this.provider;
@@ -96,4 +98,8 @@ export class BioVenomProvider {
         return response;
     }
 }
+// TODO: Add registration logic here
+// TODO: save the credentials to the cookie
+// TODO: Create a server to store the credentials
+// TODO: create a utils folder and add constants and other utility functions
 //# sourceMappingURL=BioVenomProvider.js.map
