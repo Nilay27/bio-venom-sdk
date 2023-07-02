@@ -162,6 +162,6 @@ export declare const factorySource: {
         }];
     };
 };
-export declare type FactorySource = typeof factorySource;
-export declare type SampleAbi = typeof sampleAbi;
+export type FactorySource = typeof factorySource;
+export type SampleAbi = typeof sampleAbi;
 export {};
