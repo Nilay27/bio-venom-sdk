@@ -7,7 +7,11 @@ import { EverscaleStandaloneClient } from 'everscale-standalone-client';
 import TransactionPopover from "./popup/index"
 import { SDKContext } from '../context/SDKContext';
 
-
+// TODO: Inject the provider from the  context
+// TODO: Add a message that while the user is trying for the transaction, we are prefunding the wallet
+// TODO: Till the time the wallet is not prefunded, the user should not be able to sign the transaction
+// TODO: they can fill in the details into the input
+// TODO: call to prefunding needs to made from the transaction page
 const Transaction = ({ action, actionValue, handleTxReload }) => {
     const sharedObject = useContext(SDKContext);
     const [username, setUsername] = React.useState('');

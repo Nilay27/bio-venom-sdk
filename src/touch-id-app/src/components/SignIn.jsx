@@ -3,6 +3,9 @@ import { createCredential, getPublicKey } from 'bio-venom-sdk/lib/webauthn/index
 import { encode } from 'bio-venom-sdk/lib/webauthn/base64url-arraybuffer';
 import { SDKContext } from '../context/SDKContext';
 
+// TODO: Inject the provider from the  context
+// NOTE: We only precalculate the address here and then store it in the local storage
+// we can then proceed to the  transaction page.
 const SignIn = ({ onSignIn }) => {
   const sharedObject = useContext(SDKContext);
   const [username, setUsername] = useState('');
@@ -52,7 +55,7 @@ const SignIn = ({ onSignIn }) => {
       const encodedId = encode(publicKeyCredential?.rawId);
       const venomInstance = sharedObject.provider;
       setLoading(true);
-      const walletAddress = await venomInstance.deployWalletContract(publicKey);
+      const walletAddress = await venomInstance.preCalculateAddress(publicKey);
       setLoading(false);
       console.log("walletAddress returned from venomInstance", walletAddress);
       console.log("encodedId in signIn", encodedId);
@@ -67,7 +70,7 @@ const SignIn = ({ onSignIn }) => {
       {loading && (
         <div className="loading-modal">
           <div className="loading-spinner"></div>
-          <h3>Deploying And Prefunding your Wallet with 0.05 Venom...</h3>
+          <h3>Calculating your wallet Address</h3>
         </div>
       )}
       {

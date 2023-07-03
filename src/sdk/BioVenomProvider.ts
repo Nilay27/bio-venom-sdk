@@ -4,32 +4,20 @@ import { EverscaleStandaloneClient } from 'everscale-standalone-client';
 import {SampleWalletAbi} from "./abis/SampleWalletAbi";
 import {BioVenomSigner} from "./BioVenomSigner";
 import { BioVenomCookie } from './BioVenomCookie';
-import axios from 'axios';
+import { BioVenomDeployer } from './BioVenomDeployer';
 
 
-  export class BioVenomProvider {
+export class BioVenomProvider {
   private provider?: ProviderRpcClient;
   private walletAbi: any;
   private signer: BioVenomSigner;
   private walletContract: any;
   private unsignedUserOp:any;
   private cookie: BioVenomCookie;
+  private BioVenomDeployerInstance: BioVenomDeployer;
 
   constructor() {
-    // this.provider = new ProviderRpcClient({
-    //   forceUseFallback: true,
-    //   fallback: () => EverscaleStandaloneClient.create({
-    //     connection: {
-    //       id: 1002, // network id
-    //       group: "dev",
-    //       type: 'jrpc',
-    //       data: {
-    //         endpoint: "https://jrpc-devnet.venom.foundation/rpc",
-    //       },
-    //     },
-    //     initInput: '../../node_modules/nekoton-wasm/nekoton_wasm_bg.wasm',
-    //   }),
-    // });
+    this.BioVenomDeployerInstance = new BioVenomDeployer();
     this.walletAbi = SampleWalletAbi;
     this.signer = new BioVenomSigner();
     this.cookie = new BioVenomCookie();
@@ -53,7 +41,6 @@ import axios from 'axios';
               endpoint: "https://jrpc-devnet.venom.foundation/rpc",
             },
           },
-          initInput: '../../node_modules/nekoton-wasm/nekoton_wasm_bg.wasm',
         }),
     });
     const contract = new Provider.Contract(this.walletAbi, contractAddress);
@@ -68,20 +55,23 @@ import axios from 'axios';
     return this.walletContract;
   }
 
-  // public getExpectedContractAddress(deployParams: any) {
-  //   return this.provider.getExpectedAddress(this.walletAbi, deployParams)
-  // }
+  public async preCalculateAddress(publicKey:any): Promise<string>{
+    console.log("reached preCalculateAddress in BioVenomProvider")
+    console.log("preCalculating wallet address")
+    const preCalculatedAddress = await this.BioVenomDeployerInstance.calcWalletAddress(publicKey[0], publicKey[1]);
+    console.log("preCalculated walletAddress: ", preCalculatedAddress)
+    this.setWalletContract(preCalculatedAddress);
+    return preCalculatedAddress;
+  }
 
-  public async deployWalletContract(publicKey:any): Promise<string>{
-    try {
-      const response = await axios.post('https://venom-sdk-backend-production.up.railway.app/deploy',
-      {
-        publicKey: publicKey
-      });
-      console.log("response from server", response.data);
-      // const responseBody = JSON.parse(response.data);
-      const walletAddress = response.data.walletAddress;
-      this.walletContract = this.getAnyWalletContract(walletAddress);
+  public async deployWalletContract(publicKey:any, isPrefunded:boolean): Promise<string>{
+    // requires that the wallet contract is prefunded
+    if(!isPrefunded) {
+      throw new Error('Wallet contract must be prefunded');
+    }
+    try{
+      const walletAddress = await this.BioVenomDeployerInstance.deployWalletContract(publicKey[0], publicKey[1], isPrefunded);
+      console.log("wallet deployed at: ", walletAddress)
       return walletAddress;
     } catch (error) {
       console.error('Error deploying contract: ', error);
@@ -121,5 +111,4 @@ import axios from 'axios';
 
   // TODO: Add registration logic here
   // TODO: save the credentials to the cookie
-  // TODO: Create a server to store the credentials
   // TODO: create a utils folder and add constants and other utility functions
