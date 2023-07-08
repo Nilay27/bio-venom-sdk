@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { createCredential, getPublicKey } from 'bio-venom-sdk/lib/webauthn/index';
 import { encode } from 'bio-venom-sdk/lib/webauthn/base64url-arraybuffer';
-import { BioVenomProvider } from "bio-venom-sdk/lib/BioVenomProvider"
+import { SDKContext } from '../context/SDKContext';
 
 const SignIn = ({ onSignIn }) => {
+  const sharedObject = useContext(SDKContext);
   const [username, setUsername] = useState('');
   const [showSignIn, setShowSignIn] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -35,6 +36,7 @@ const SignIn = ({ onSignIn }) => {
       setUsername(storedUsername);
       onSignIn();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); 
 
   const handleSignInClick = async () => {
@@ -48,7 +50,7 @@ const SignIn = ({ onSignIn }) => {
       const publicKey = await getPublicKey(publicKeyCredential.response.attestationObject);
       console.log("username", username);
       const encodedId = encode(publicKeyCredential?.rawId);
-      const venomInstance = new BioVenomProvider();
+      const venomInstance = sharedObject.provider;
       setLoading(true);
       const walletAddress = await venomInstance.deployWalletContract(publicKey);
       setLoading(false);
