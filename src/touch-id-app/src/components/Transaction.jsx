@@ -1,21 +1,22 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {SampleWalletAbi} from "../abis/SampleWalletAbi"
 import {StateContractAbi} from "../abis/StateContractAbi"
 import {VenomWalletAbi} from "../abis/VenomWalletAbi"
 import { Address, ProviderRpcClient } from 'everscale-inpage-provider';
 import { EverscaleStandaloneClient } from 'everscale-standalone-client';
-import { BioVenomProvider } from "bio-venom-sdk/lib/BioVenomProvider";
 import TransactionPopover from "./popup/index"
+import { SDKContext } from '../context/SDKContext';
 
 
 const Transaction = ({ action, actionValue, handleTxReload }) => {
+    const sharedObject = useContext(SDKContext);
     const [username, setUsername] = React.useState('');
     const [encodedId, setEncodedId] = React.useState('');
     const [WalletContract, setWalletContract] = React.useState('');
     const [walletAddress, setWalletAddress] = React.useState('');
     const [publicKey, setPublicKey] = React.useState('');
     const [stateContract, setStateContract] = React.useState('');
-    const [bioVenomInstance, setBioVenomInstance] = React.useState(new BioVenomProvider());
+    const [bioVenomInstance, setBioVenomInstance] = React.useState(sharedObject.provider);
     const [showPopover, setShowPopover] = React.useState(false);
     const [amount, setAmount] = React.useState(0.1);
     const [toAddress, setToAddress] = React.useState('');
@@ -179,6 +180,7 @@ const Transaction = ({ action, actionValue, handleTxReload }) => {
           }
         }        
         setWalletContract(WalletContract);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     
