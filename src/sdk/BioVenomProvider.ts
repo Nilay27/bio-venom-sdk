@@ -107,6 +107,10 @@ export class BioVenomProvider {
       bounce: bounce, userOp: signedTVMCellUserOp}).sendExternal({withoutSignature: true});
     return response;
   }
+
+  public getBioVenomDeployerInstance(): BioVenomDeployer {
+    return this.BioVenomDeployerInstance;
+  }
 }
 
   // TODO: Add registration logic here

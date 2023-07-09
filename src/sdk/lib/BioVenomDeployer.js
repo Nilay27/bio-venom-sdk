@@ -3,6 +3,8 @@ import { libWeb } from '@eversdk/lib-web';
 import { SampleWalletContract } from "./deployHelpers/SampleWalletContract";
 import { GiverAbi } from "./deployHelpers/GiverAbi";
 import axios from 'axios';
+import { Buffer } from 'buffer/';
+import nacl from 'tweetnacl';
 //@ts-ignore
 TonClient.useBinaryLibrary(libWeb);
 export class BioVenomDeployer {
@@ -14,6 +16,12 @@ export class BioVenomDeployer {
                 endpoints: ['https://gql-devnet.venom.network/graphql'],
             },
         });
+        const keyPair = nacl.sign.keyPair();
+        const privateKeyOnly = keyPair.secretKey.slice(0, nacl.sign.publicKeyLength);
+        this.randomKeysForDeployment = {
+            public: Buffer.from(keyPair.publicKey).toString('hex'),
+            secret: Buffer.from(privateKeyOnly).toString('hex')
+        };
     }
     /**
      * @dev a random signer to calculate the address of the wallet contract and
@@ -56,7 +64,9 @@ export class BioVenomDeployer {
         };
     }
     async calcWalletAddress(Q0, Q1) {
+        console.log("reached calculating address");
         if (!this.randomKeysForDeployment) {
+            console.log("random keys for deployment not set in calcWalletAddress");
             await this.setRandomKeysForDeployment();
         }
         if (!this.deployOptions || Object.keys(this.deployOptions).length === 0) {
@@ -67,14 +77,18 @@ export class BioVenomDeployer {
     }
     async deployWalletContract(Q0, Q1, isPrefunded) {
         console.log("reached deployWalletContract option");
+        if (!this.randomKeysForDeployment) {
+            throw new Error("random keys for deployment not set");
+        }
         if (!this.deployOptions || Object.keys(this.deployOptions).length === 0) {
+            console.log("deploy options not set");
             this.setDeployOptions(Q0, Q1);
         }
         if (isPrefunded) {
             throw new Error("Wallet not prefunded");
         }
         const address = await this.calcWalletAddress(Q0, Q1);
-        console.log("deploying wallet contract");
+        console.log("deploying wallet contract at address: ", address);
         await this.tonClient.processing.process_message({
             message_encode_params: this.deployOptions,
             send_events: false,
@@ -121,6 +135,10 @@ export class BioVenomDeployer {
     async prefundDeployedWalletViaBackend(url, dest) {
         try {
             const response = await axios.post(url, { dest: dest, amount: this.prefundingAmount });
+            // check the status code of the response
+            if (response.status !== 200) {
+                throw new Error('Server returned status code ' + response.status);
+            }
             console.log("response from server", response.data);
         }
         catch (error) {

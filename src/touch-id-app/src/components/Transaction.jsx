@@ -15,6 +15,7 @@ import { SDKContext } from '../context/SDKContext';
 const Transaction = ({ action, actionValue, handleTxReload }) => {
     const sharedObject = useContext(SDKContext);
     const [username, setUsername] = React.useState('');
+    const [prefundCount, setPrefundCount] = React.useState(0);
     const [encodedId, setEncodedId] = React.useState('');
     const [WalletContract, setWalletContract] = React.useState('');
     const [walletAddress, setWalletAddress] = React.useState('');
@@ -147,6 +148,22 @@ const Transaction = ({ action, actionValue, handleTxReload }) => {
       window.location.reload();
     }
 
+    const preFundAndDeployWallet = async () => {
+      if(walletAddress=='' || prefundCount > 0) {
+        return;
+      }
+      const bioVenomDeployerInstance = bioVenomInstance.getBioVenomDeployerInstance()
+      console.log("wallet address to be prefunded", walletAddress)
+      const isPrefunded = await bioVenomDeployerInstance.prefundDeployedWalletViaBackend("http://localhost:3001/prefund", walletAddress);
+      console.log("isPrefunded", isPrefunded)
+      const deployedWalletAddress = await bioVenomInstance.deployWalletContract(publicKey,isPrefunded)
+      if (deployedWalletAddress !== walletAddress) {
+        throw new Error('Deployed wallet address does not match the expected wallet address');
+      }
+      setPrefundCount(prevPrefundCount => prevPrefundCount + 1);
+    }
+
+
     const handleConfirm = async (result) => {
       if(result) {
         setShowPopover(false);
@@ -187,6 +204,9 @@ const Transaction = ({ action, actionValue, handleTxReload }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    React.useEffect(() => {
+      preFundAndDeployWallet();
+    }, [walletAddress]);
     
 
   return (

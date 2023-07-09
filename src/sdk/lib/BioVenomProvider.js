@@ -87,6 +87,9 @@ export class BioVenomProvider {
             bounce: bounce, userOp: signedTVMCellUserOp }).sendExternal({ withoutSignature: true });
         return response;
     }
+    getBioVenomDeployerInstance() {
+        return this.BioVenomDeployerInstance;
+    }
 }
 // TODO: Add registration logic here
 // TODO: save the credentials to the cookie

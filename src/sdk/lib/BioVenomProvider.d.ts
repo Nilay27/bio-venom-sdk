@@ -1,4 +1,5 @@
 import { Address, Contract } from 'everscale-inpage-provider';
+import { BioVenomDeployer } from './BioVenomDeployer';
 export declare class BioVenomProvider {
     private provider?;
     private walletAbi;
@@ -16,4 +17,5 @@ export declare class BioVenomProvider {
     createUnsignedUserOp(encodedPayload: any, value?: number): Promise<any>;
     signTvmCellUserOp(unsignedUserOp: any, encodedId: any, pubkey: any): Promise<any>;
     executeTransaction(destinationAddress: Address, signedTVMCellUserOp: any, value: any, bounce?: boolean): Promise<any>;
+    getBioVenomDeployerInstance(): BioVenomDeployer;
 }

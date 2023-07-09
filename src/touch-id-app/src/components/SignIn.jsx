@@ -12,6 +12,8 @@ const SignIn = ({ onSignIn }) => {
   const [showSignIn, setShowSignIn] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showInput, setShowInput] = useState(false);
+  const [bioVenomInstance, setBioVenomInstance] = React.useState(sharedObject.provider);
+
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
@@ -53,14 +55,15 @@ const SignIn = ({ onSignIn }) => {
       const publicKey = await getPublicKey(publicKeyCredential.response.attestationObject);
       console.log("username", username);
       const encodedId = encode(publicKeyCredential?.rawId);
-      const venomInstance = sharedObject.provider;
       setLoading(true);
-      const walletAddress = await venomInstance.preCalculateAddress(publicKey);
+      const walletAddress = await bioVenomInstance.preCalculateAddress(publicKey);
       setLoading(false);
-      console.log("walletAddress returned from venomInstance", walletAddress);
+      console.log("walletAddress returned from bioVenomInstance", walletAddress);
       console.log("encodedId in signIn", encodedId);
       localStorage.setItem(username, JSON.stringify({ encodedId: encodedId, publicKey: publicKey, walletAddress: walletAddress }));
       localStorage.setItem("username", username);
+      await new Promise(resolve => setTimeout(resolve, 10000));
+      console.log('Hello, world!');
     }
     onSignIn();
   };
@@ -96,3 +99,22 @@ const SignIn = ({ onSignIn }) => {
 }
 
 export default SignIn;
+
+/**
+ * public
+: 
+"de5a05de5578cd539b13dada0f1002ed6296ec5f13de68d437dfae2d58ea4a83"
+secret
+: 
+"77ea0fc93abacfc63410963d11a70ccdc14f68ca5b937d05835731bcbffe2c7d"
+[[Prototype]]
+: 
+Object
+type
+: 
+"Keys"
+[[Prototype]]
+: 
+Object
+
+ */

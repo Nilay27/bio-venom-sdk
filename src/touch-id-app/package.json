@@ -14,7 +14,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && cp ./node_modules/bio-venom-sdk/lib/eversdk.wasm ./build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
