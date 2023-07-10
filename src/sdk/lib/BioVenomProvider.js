@@ -11,13 +11,7 @@ export class BioVenomProvider {
         this.walletAbi = SampleWalletAbi;
         this.signer = new BioVenomSigner();
         this.cookie = new BioVenomCookie();
-    }
-    // public getProvider(): ProviderRpcClient {
-    //   return this.provider;
-    // }
-    getAnyWalletContract(address) {
-        const contractAddress = new Address(address);
-        const Provider = new ProviderRpcClient({
+        this.provider = new ProviderRpcClient({
             forceUseFallback: true,
             fallback: () => EverscaleStandaloneClient.create({
                 connection: {
@@ -30,7 +24,13 @@ export class BioVenomProvider {
                 },
             }),
         });
-        const contract = new Provider.Contract(this.walletAbi, contractAddress);
+    }
+    getProvider() {
+        return this.provider;
+    }
+    getAnyWalletContract(address) {
+        const contractAddress = new Address(address);
+        const contract = new this.provider.Contract(this.walletAbi, contractAddress);
         return contract;
     }
     setWalletContract(address) {
@@ -47,13 +47,10 @@ export class BioVenomProvider {
         this.setWalletContract(preCalculatedAddress);
         return preCalculatedAddress;
     }
-    async deployWalletContract(publicKey, isPrefunded) {
+    async deployWalletContract(publicKey) {
         // requires that the wallet contract is prefunded
-        if (!isPrefunded) {
-            throw new Error('Wallet contract must be prefunded');
-        }
         try {
-            const walletAddress = await this.BioVenomDeployerInstance.deployWalletContract(publicKey[0], publicKey[1], isPrefunded);
+            const walletAddress = await this.BioVenomDeployerInstance.deployWalletContract(publicKey[0], publicKey[1]);
             console.log("wallet deployed at: ", walletAddress);
             return walletAddress;
         }
@@ -94,4 +91,17 @@ export class BioVenomProvider {
 // TODO: Add registration logic here
 // TODO: save the credentials to the cookie
 // TODO: create a utils folder and add constants and other utility functions
+/**
+ * public
+:
+"24d51af2b22d4b8b412c2b774bd3049c9b99873e1f86734a4de39497f2cd0d1a"
+secret
+:
+"9710b0f0e9e4383485a66843b6b6de1c95bde42d0156c4818d1c182f922b5cf5"
+[[Prototype]]
+:
+Object
+ *
+
+ */ 
 //# sourceMappingURL=BioVenomProvider.js.map

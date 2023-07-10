@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import {SampleWalletAbi} from "../abis/SampleWalletAbi"
 import {StateContractAbi} from "../abis/StateContractAbi"
 import {VenomWalletAbi} from "../abis/VenomWalletAbi"
-import { Address, ProviderRpcClient } from 'everscale-inpage-provider';
+import { Address } from 'everscale-inpage-provider';
 import { EverscaleStandaloneClient } from 'everscale-standalone-client';
 import TransactionPopover from "./popup/index"
 import { SDKContext } from '../context/SDKContext';
@@ -28,47 +28,31 @@ const Transaction = ({ action, actionValue, handleTxReload }) => {
     const [message, setMessage] = React.useState('');
     const [paymasterAddress, setPaymasterAddress] = React.useState('0:04389d458b28c3367d699ebbbf933722f0865fae9a5fdd701a161de866b99a48');
     const [transactionInProgress, setTransactionInProgress] = React.useState(false);
-    const [Provider, setProvider] = React.useState(new ProviderRpcClient({
-      forceUseFallback: true,
-      fallback: () =>
-        EverscaleStandaloneClient.create({
-          connection: {
-            id: 1002, // network id
-            group: "dev",
-            type: 'jrpc',
-            data: {
-              endpoint: "https://jrpc-devnet.venom.foundation/rpc",
-            },
-          }
-        }),
-    }));
+    const [httpProvider, setHttpProvider] = React.useState(null);
 
 
 
 
     const createEncodedPayload = async (newState = 0) => {
-      const Provider = new ProviderRpcClient({
-        forceUseFallback: true,
-        fallback: () =>
-          EverscaleStandaloneClient.create({
-            connection: {
-              id: 1002, // network id
-              group: "dev",
-              type: 'jrpc',
-              data: {
-                endpoint: "https://jrpc-devnet.venom.foundation/rpc",
-              },
-            },
+      // const Provider = new ProviderRpcClient({
+      //   forceUseFallback: true,
+      //   fallback: () =>
+      //     EverscaleStandaloneClient.create({
+      //       connection: {
+      //         id: 1002, // network id
+      //         group: "dev",
+      //         type: 'jrpc',
+      //         data: {
+      //           endpoint: "https://jrpc-devnet.venom.foundation/rpc",
+      //         },
+      //       },
             
-          }),
-      });
-      if (Provider === null ) {
-        setHtppProvider();
-        setHtppProvider();
-      }
+      //     }),
+      // });
+      
       const stateContractAddressString = "0:26e36bfd887de7b8b4b8b21155bc073403b8ef264c8de2f72636166b846dc375"
       const StateContractAddress = new Address(stateContractAddressString)
-      const StateContract = new Provider.Contract(StateContractAbi, StateContractAddress);
+      const StateContract = new httpProvider.Contract(StateContractAbi, StateContractAddress);
       setStateContract(StateContract);
       console.log("state contract address", StateContract.address.toString())
       const payload = await StateContract.methods.setState({_state: newState}).encodeInternal();
@@ -79,40 +63,39 @@ const Transaction = ({ action, actionValue, handleTxReload }) => {
       window.open('https://devnet.venomscan.com/accounts/'+ walletAddress, '_blank');
     }
 
-    const setHtppProvider = () =>{
-      const Provider = new ProviderRpcClient({
-        forceUseFallback: true,
-        fallback: () =>
-          EverscaleStandaloneClient.create({
-            connection: {
-              id: 1002, // network id
-              group: "dev",
-              type: 'jrpc',
-              data: {
-                endpoint: "https://jrpc-devnet.venom.foundation/rpc",
-              },
-            },
+    // const setHtppProvider = () =>{
+    //   const Provider = new ProviderRpcClient({
+    //     forceUseFallback: true,
+    //     fallback: () =>
+    //       EverscaleStandaloneClient.create({
+    //         connection: {
+    //           id: 1002, // network id
+    //           group: "dev",
+    //           type: 'jrpc',
+    //           data: {
+    //             endpoint: "https://jrpc-devnet.venom.foundation/rpc",
+    //           },
+    //         },
             
-          }),
-      });
-      console.log("Provider", Provider)
-    }
+    //       }),
+    //   });
+    //   console.log("Provider", Provider)
+    // }
 
     const handleSignTransactionClick = async () => {
       let encodedPayload = '';
       let unsignedUserOp = '';
-      if (Provider === null) {
-        setHtppProvider();
-        setHtppProvider();
+      if (httpProvider === null) {
+        throw new Error('httpProvider is null');
       }
       const WalletAddress = new Address(walletAddress)
-      const WalletContract = new Provider.Contract(SampleWalletAbi, WalletAddress);
+      const WalletContract = new httpProvider.Contract(SampleWalletAbi, WalletAddress);
       bioVenomInstance.setWalletContract(walletAddress);
       console.log("walletAddress", WalletContract.address.toString())
       if (action === 'sendVenom') {
         // call function to send venom with actionValue
         const venomWalletAdd = new Address(actionValue);
-        const venomWalletContract = new Provider.Contract(VenomWalletAbi, venomWalletAdd);
+        const venomWalletContract = new httpProvider.Contract(VenomWalletAbi, venomWalletAdd);
         unsignedUserOp = await bioVenomInstance.createUnsignedUserOp(encodedPayload);
         const signedTVMCellUserOp = await bioVenomInstance.signTvmCellUserOp(unsignedUserOp, encodedId, publicKey)
         const output = await bioVenomInstance.executeTransaction(venomWalletContract.address, signedTVMCellUserOp,
@@ -156,7 +139,7 @@ const Transaction = ({ action, actionValue, handleTxReload }) => {
       console.log("wallet address to be prefunded", walletAddress)
       const isPrefunded = await bioVenomDeployerInstance.prefundDeployedWalletViaBackend("http://localhost:3001/prefund", walletAddress);
       console.log("isPrefunded", isPrefunded)
-      const deployedWalletAddress = await bioVenomInstance.deployWalletContract(publicKey,isPrefunded)
+      const deployedWalletAddress = await bioVenomInstance.deployWalletContract(publicKey)
       if (deployedWalletAddress !== walletAddress) {
         throw new Error('Deployed wallet address does not match the expected wallet address');
       }
@@ -181,7 +164,7 @@ const Transaction = ({ action, actionValue, handleTxReload }) => {
         handleTxReload()
         localStorage.setItem('hasReloaded', 'true');
         console.log("reloading")
-        setTimeout(() => window.location.reload(), 500); // wait half a second before reload
+        // setTimeout(() => window.location.reload(), 500); // wait half a second before reload
         console.log("reloaded")
       }
       // if (username && localStorage.getItem('hasReloaded') === 'true'){
@@ -201,6 +184,9 @@ const Transaction = ({ action, actionValue, handleTxReload }) => {
           }
         }        
         setWalletContract(WalletContract);
+
+        const Provider = bioVenomInstance.getProvider();
+        setHttpProvider(Provider)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

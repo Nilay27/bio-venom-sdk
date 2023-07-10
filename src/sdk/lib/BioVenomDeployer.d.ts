@@ -16,8 +16,9 @@ export declare class BioVenomDeployer {
     setRandomKeysForDeployment(): Promise<void>;
     setDeployOptions(Q0: string, Q1: string): void;
     calcWalletAddress(Q0: string, Q1: string): Promise<string>;
-    deployWalletContract(Q0: string, Q1: string, isPrefunded: boolean): Promise<string>;
+    deployWalletContract(Q0: string, Q1: string): Promise<string>;
     prefundDeployedWalletViaSigner(source: string, dest: string, value: number, giverSigner?: Signer): Promise<boolean>;
     prefundDeployedWalletViaBackend(url: string, dest: string): Promise<boolean>;
     changePrefundingAmount(amount: number): void;
+    getAccountBalance(address: string): Promise<string>;
 }

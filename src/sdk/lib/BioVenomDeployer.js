@@ -75,8 +75,9 @@ export class BioVenomDeployer {
         const { address } = await this.tonClient.abi.encode_message(this.deployOptions);
         return address;
     }
-    async deployWalletContract(Q0, Q1, isPrefunded) {
+    async deployWalletContract(Q0, Q1) {
         console.log("reached deployWalletContract option");
+        console.log("keys while deploying: ", this.randomKeysForDeployment);
         if (!this.randomKeysForDeployment) {
             throw new Error("random keys for deployment not set");
         }
@@ -84,10 +85,13 @@ export class BioVenomDeployer {
             console.log("deploy options not set");
             this.setDeployOptions(Q0, Q1);
         }
-        if (isPrefunded) {
-            throw new Error("Wallet not prefunded");
-        }
         const address = await this.calcWalletAddress(Q0, Q1);
+        const balanceHex = await this.getAccountBalance(address);
+        const balance = BigInt(balanceHex);
+        console.log("balance of wallet to be deployed", balance);
+        if (balance == BigInt(0)) {
+            throw new Error(`Wallet not prefunded, it has ${balance} tokens`);
+        }
         console.log("deploying wallet contract at address: ", address);
         await this.tonClient.processing.process_message({
             message_encode_params: this.deployOptions,
@@ -133,6 +137,13 @@ export class BioVenomDeployer {
         return true;
     }
     async prefundDeployedWalletViaBackend(url, dest) {
+        // check if dest is already prefunded by checking balance, if balance > 0, return
+        const balance = await this.getAccountBalance(dest);
+        if (parseInt(balance) > 0) {
+            console.log("wallet already prefunded");
+            return true;
+        }
+        console.log(`Transfering ${this.prefundingAmount} tokens from giver to ${dest}`);
         try {
             const response = await axios.post(url, { dest: dest, amount: this.prefundingAmount });
             // check the status code of the response
@@ -150,6 +161,26 @@ export class BioVenomDeployer {
     }
     changePrefundingAmount(amount) {
         this.prefundingAmount = amount;
+    }
+    getAccountBalance(address) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const result = await this.tonClient.net.query_collection({
+                    collection: 'accounts',
+                    filter: {
+                        id: { eq: address },
+                    },
+                    result: 'balance',
+                });
+                console.log("result: ", result);
+                const balance = result.result[0].balance;
+                resolve(balance);
+            }
+            catch (error) {
+                console.error('Error getting    balance: ', error);
+                reject(error);
+            }
+        });
     }
 }
 //# sourceMappingURL=BioVenomDeployer.js.map

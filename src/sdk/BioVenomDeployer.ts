@@ -86,8 +86,9 @@ export class BioVenomDeployer {
         return address;
     }
 
-    public async deployWalletContract(Q0:string, Q1:string, isPrefunded:boolean): Promise<string> {
+    public async deployWalletContract(Q0:string, Q1:string): Promise<string> {
         console.log("reached deployWalletContract option")
+        console.log("keys while deploying: ", this.randomKeysForDeployment)
         if(!this.randomKeysForDeployment) {
            throw new Error("random keys for deployment not set");
         }
@@ -95,10 +96,14 @@ export class BioVenomDeployer {
             console.log("deploy options not set")
              this.setDeployOptions(Q0, Q1);
         }
-        if(isPrefunded) {
-            throw new Error("Wallet not prefunded");
-        }
         const address = await this.calcWalletAddress(Q0, Q1);
+        const balanceHex = await this.getAccountBalance(address);
+        const balance = BigInt(balanceHex);
+        console.log("balance of wallet to be deployed", balance)
+        if(balance == BigInt(0)) {
+            throw new Error(`Wallet not prefunded, it has ${balance} tokens`);
+        }
+        
         console.log("deploying wallet contract at address: ", address);
         await this.tonClient.processing.process_message({
             message_encode_params: this.deployOptions,
@@ -146,6 +151,13 @@ export class BioVenomDeployer {
     }
 
     public async prefundDeployedWalletViaBackend(url:string, dest:string): Promise<boolean>{
+        // check if dest is already prefunded by checking balance, if balance > 0, return
+        const balance = await this.getAccountBalance(dest);
+        if(parseInt(balance) > 0) {
+            console.log("wallet already prefunded");
+            return true;
+        }
+        console.log(`Transfering ${this.prefundingAmount} tokens from giver to ${dest}`);
         try {
             const response = await axios.post(url, {dest:dest,  amount: this.prefundingAmount});
     
@@ -165,6 +177,26 @@ export class BioVenomDeployer {
 
     public changePrefundingAmount(amount:number) {
         this.prefundingAmount = amount;
+    }
+
+    public getAccountBalance(address:string): Promise<string> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const result = await this.tonClient.net.query_collection({
+                    collection: 'accounts',
+                    filter: {
+                        id: { eq: address },
+                    },
+                    result: 'balance',
+                });
+                console.log("result: ", result)
+                const balance = result.result[0].balance;
+                resolve(balance);
+            } catch (error) {
+                console.error('Error getting    balance: ', error);
+                reject(error);
+            }
+        });
     }
 }
 

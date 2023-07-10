@@ -21,15 +21,7 @@ export class BioVenomProvider {
     this.walletAbi = SampleWalletAbi;
     this.signer = new BioVenomSigner();
     this.cookie = new BioVenomCookie();
-  }
-
-  // public getProvider(): ProviderRpcClient {
-  //   return this.provider;
-  // }
-
-  public getAnyWalletContract(address: string) {
-    const contractAddress = new Address(address);
-    const Provider = new ProviderRpcClient({
+    this.provider = new ProviderRpcClient({
       forceUseFallback: true,
       fallback: () =>
         EverscaleStandaloneClient.create({
@@ -43,7 +35,15 @@ export class BioVenomProvider {
           },
         }),
     });
-    const contract = new Provider.Contract(this.walletAbi, contractAddress);
+  }
+
+  public getProvider(): ProviderRpcClient {
+    return this.provider;
+  }
+
+  public getAnyWalletContract(address: string) {
+    const contractAddress = new Address(address);
+    const contract = new this.provider.Contract(this.walletAbi, contractAddress);
     return contract;
   }
 
@@ -64,13 +64,10 @@ export class BioVenomProvider {
     return preCalculatedAddress;
   }
 
-  public async deployWalletContract(publicKey:any, isPrefunded:boolean): Promise<string>{
+  public async deployWalletContract(publicKey:any): Promise<string>{
     // requires that the wallet contract is prefunded
-    if(!isPrefunded) {
-      throw new Error('Wallet contract must be prefunded');
-    }
     try{
-      const walletAddress = await this.BioVenomDeployerInstance.deployWalletContract(publicKey[0], publicKey[1], isPrefunded);
+      const walletAddress = await this.BioVenomDeployerInstance.deployWalletContract(publicKey[0], publicKey[1]);
       console.log("wallet deployed at: ", walletAddress)
       return walletAddress;
     } catch (error) {
