@@ -1,4 +1,4 @@
-import { ParamsOfEncodeMessage, ParamsOfProcessMessage, TonClient, abiContract, Signer} from '@eversdk/core';
+import { ParamsOfEncodeMessage, ParamsOfProcessMessage, TonClient, abiContract, Signer, KeyPair} from '@eversdk/core';
 import { libWeb } from '@eversdk/lib-web';
 import {SampleWalletContract} from "./deployHelpers/SampleWalletContract";
 import {GiverAbi} from "./deployHelpers/GiverAbi";
@@ -10,7 +10,7 @@ import nacl from 'tweetnacl';
 TonClient.useBinaryLibrary(libWeb);
 export class BioVenomDeployer {
     private tonClient: TonClient;
-    private randomKeysForDeployment? : any;
+    private randomKeysForDeployment? : KeyPair;
     private deployOptions?: ParamsOfEncodeMessage;
     private prefundingAmount : number = 50_000_000;
 

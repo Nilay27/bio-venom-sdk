@@ -99,22 +99,3 @@ const SignIn = ({ onSignIn }) => {
 }
 
 export default SignIn;
-
-/**
- * public
-: 
-"de5a05de5578cd539b13dada0f1002ed6296ec5f13de68d437dfae2d58ea4a83"
-secret
-: 
-"77ea0fc93abacfc63410963d11a70ccdc14f68ca5b937d05835731bcbffe2c7d"
-[[Prototype]]
-: 
-Object
-type
-: 
-"Keys"
-[[Prototype]]
-: 
-Object
-
- */
