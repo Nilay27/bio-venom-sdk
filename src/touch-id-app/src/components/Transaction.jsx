@@ -3,11 +3,10 @@ import {SampleWalletAbi} from "../abis/SampleWalletAbi"
 import {StateContractAbi} from "../abis/StateContractAbi"
 import {VenomWalletAbi} from "../abis/VenomWalletAbi"
 import { Address } from 'everscale-inpage-provider';
-import { EverscaleStandaloneClient } from 'everscale-standalone-client';
 import TransactionPopover from "./popup/index"
 import { SDKContext } from '../context/SDKContext';
+import {PREFUND_URL} from "../constants"
 
-// TODO: Inject the provider from the  context
 // TODO: Add a message that while the user is trying for the transaction, we are prefunding the wallet
 // TODO: Till the time the wallet is not prefunded, the user should not be able to sign the transaction
 // TODO: they can fill in the details into the input
@@ -34,22 +33,7 @@ const Transaction = ({ action, actionValue, handleTxReload }) => {
 
 
     const createEncodedPayload = async (newState = 0) => {
-      // const Provider = new ProviderRpcClient({
-      //   forceUseFallback: true,
-      //   fallback: () =>
-      //     EverscaleStandaloneClient.create({
-      //       connection: {
-      //         id: 1002, // network id
-      //         group: "dev",
-      //         type: 'jrpc',
-      //         data: {
-      //           endpoint: "https://jrpc-devnet.venom.foundation/rpc",
-      //         },
-      //       },
-            
-      //     }),
-      // });
-      
+     
       const stateContractAddressString = "0:26e36bfd887de7b8b4b8b21155bc073403b8ef264c8de2f72636166b846dc375"
       const StateContractAddress = new Address(stateContractAddressString)
       const StateContract = new httpProvider.Contract(StateContractAbi, StateContractAddress);
@@ -63,24 +47,7 @@ const Transaction = ({ action, actionValue, handleTxReload }) => {
       window.open('https://devnet.venomscan.com/accounts/'+ walletAddress, '_blank');
     }
 
-    // const setHtppProvider = () =>{
-    //   const Provider = new ProviderRpcClient({
-    //     forceUseFallback: true,
-    //     fallback: () =>
-    //       EverscaleStandaloneClient.create({
-    //         connection: {
-    //           id: 1002, // network id
-    //           group: "dev",
-    //           type: 'jrpc',
-    //           data: {
-    //             endpoint: "https://jrpc-devnet.venom.foundation/rpc",
-    //           },
-    //         },
-            
-    //       }),
-    //   });
-    //   console.log("Provider", Provider)
-    // }
+  
 
     const handleSignTransactionClick = async () => {
       let encodedPayload = '';
@@ -137,7 +104,7 @@ const Transaction = ({ action, actionValue, handleTxReload }) => {
       }
       const bioVenomDeployerInstance = bioVenomInstance.getBioVenomDeployerInstance()
       console.log("wallet address to be prefunded", walletAddress)
-      const isPrefunded = await bioVenomDeployerInstance.prefundDeployedWalletViaBackend("http://localhost:3001/prefund", walletAddress);
+      const isPrefunded = await bioVenomDeployerInstance.prefundDeployedWalletViaBackend(PREFUND_URL, walletAddress);
       console.log("isPrefunded", isPrefunded)
       const deployedWalletAddress = await bioVenomInstance.deployWalletContract(publicKey)
       if (deployedWalletAddress !== walletAddress) {
@@ -164,12 +131,9 @@ const Transaction = ({ action, actionValue, handleTxReload }) => {
         handleTxReload()
         localStorage.setItem('hasReloaded', 'true');
         console.log("reloading")
-        // setTimeout(() => window.location.reload(), 500); // wait half a second before reload
         console.log("reloaded")
       }
-      // if (username && localStorage.getItem('hasReloaded') === 'true'){
-      //   localStorage.setItem('hasReloaded', 'false');
-      // }
+     
         console.log("username", username);
         if(username) {
           setUsername(username);

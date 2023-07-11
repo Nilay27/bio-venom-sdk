@@ -3,9 +3,6 @@ import { createCredential, getPublicKey } from 'bio-venom-sdk/lib/webauthn/index
 import { encode } from 'bio-venom-sdk/lib/webauthn/base64url-arraybuffer';
 import { SDKContext } from '../context/SDKContext';
 
-// TODO: Inject the provider from the  context
-// NOTE: We only precalculate the address here and then store it in the local storage
-// we can then proceed to the  transaction page.
 const SignIn = ({ onSignIn }) => {
   const sharedObject = useContext(SDKContext);
   const [username, setUsername] = useState('');
@@ -23,16 +20,6 @@ const SignIn = ({ onSignIn }) => {
     setShowSignIn(true);
     setShowInput(true);
   };
-
-  // // This function could be used to auto sign in
-  // const autoSignIn = async (storedUsername) => {
-  //   const storedCredentials = localStorage.getItem(storedUsername);
-    
-  //   if (storedCredentials) {
-  //     console.log(`Credentials for ${storedUsername} already exist.`);
-  //     onSignIn(storedUsername);
-  //   }
-  // };
 
   useEffect(() => {
     const hasReloaded = localStorage.getItem('hasReloaded');
@@ -62,8 +49,6 @@ const SignIn = ({ onSignIn }) => {
       console.log("encodedId in signIn", encodedId);
       localStorage.setItem(username, JSON.stringify({ encodedId: encodedId, publicKey: publicKey, walletAddress: walletAddress }));
       localStorage.setItem("username", username);
-      await new Promise(resolve => setTimeout(resolve, 10000));
-      console.log('Hello, world!');
     }
     onSignIn();
   };

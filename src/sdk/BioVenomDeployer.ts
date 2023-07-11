@@ -153,6 +153,7 @@ export class BioVenomDeployer {
     public async prefundDeployedWalletViaBackend(url:string, dest:string): Promise<boolean>{
         // check if dest is already prefunded by checking balance, if balance > 0, return
         const balance = await this.getAccountBalance(dest);
+        // TODO: remove this logic in future and ensure handling in UI
         if(parseInt(balance) > 0) {
             console.log("wallet already prefunded");
             return true;

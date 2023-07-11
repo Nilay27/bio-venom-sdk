@@ -14,10 +14,10 @@ export class BioVenomProvider {
   private walletContract: any;
   private unsignedUserOp:any;
   private cookie: BioVenomCookie;
-  private BioVenomDeployerInstance: BioVenomDeployer;
+  private bioVenomDeployerInstance: BioVenomDeployer;
 
   constructor() {
-    this.BioVenomDeployerInstance = new BioVenomDeployer();
+    this.bioVenomDeployerInstance = new BioVenomDeployer();
     this.walletAbi = SampleWalletAbi;
     this.signer = new BioVenomSigner();
     this.cookie = new BioVenomCookie();
@@ -58,7 +58,7 @@ export class BioVenomProvider {
   public async preCalculateAddress(publicKey:any): Promise<string>{
     console.log("reached preCalculateAddress in BioVenomProvider")
     console.log("preCalculating wallet address")
-    const preCalculatedAddress = await this.BioVenomDeployerInstance.calcWalletAddress(publicKey[0], publicKey[1]);
+    const preCalculatedAddress = await this.bioVenomDeployerInstance.calcWalletAddress(publicKey[0], publicKey[1]);
     console.log("preCalculated walletAddress: ", preCalculatedAddress)
     this.setWalletContract(preCalculatedAddress);
     return preCalculatedAddress;
@@ -67,7 +67,7 @@ export class BioVenomProvider {
   public async deployWalletContract(publicKey:any): Promise<string>{
     // requires that the wallet contract is prefunded
     try{
-      const walletAddress = await this.BioVenomDeployerInstance.deployWalletContract(publicKey[0], publicKey[1]);
+      const walletAddress = await this.bioVenomDeployerInstance.deployWalletContract(publicKey[0], publicKey[1]);
       console.log("wallet deployed at: ", walletAddress)
       return walletAddress;
     } catch (error) {
@@ -106,7 +106,7 @@ export class BioVenomProvider {
   }
 
   public getBioVenomDeployerInstance(): BioVenomDeployer {
-    return this.BioVenomDeployerInstance;
+    return this.bioVenomDeployerInstance;
   }
 }
 
