@@ -5,7 +5,7 @@ import {VenomWalletAbi} from "../abis/VenomWalletAbi"
 import { Address } from 'everscale-inpage-provider';
 import TransactionPopover from "./popup/index"
 import { SDKContext } from '../context/SDKContext';
-import {PREFUND_URL} from "../constants"
+import {PREFUND_URL} from "../Constants";
 
 // TODO: Add a message that while the user is trying for the transaction, we are prefunding the wallet
 // TODO: Till the time the wallet is not prefunded, the user should not be able to sign the transaction
