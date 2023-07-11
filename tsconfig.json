@@ -10,6 +10,6 @@
      "experimentalDecorators": true,
      "sourceMap": true
   },
-  "include": ["src/**/*.ts", "src/*.ts", "src/sdk/TestProvider.js"],
+  "include": ["src/**/*.ts", "src/*.ts", "src/sdk/TestProvider.js", "src/touch-id-app/src/Constants.js"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }

@@ -4,33 +4,14 @@ import { EverscaleStandaloneClient } from 'everscale-standalone-client';
 import { SampleWalletAbi } from "./abis/SampleWalletAbi";
 import { BioVenomSigner } from "./BioVenomSigner";
 import { BioVenomCookie } from './BioVenomCookie';
-import axios from 'axios';
+import { BioVenomDeployer } from './BioVenomDeployer';
 export class BioVenomProvider {
     constructor() {
-        // this.provider = new ProviderRpcClient({
-        //   forceUseFallback: true,
-        //   fallback: () => EverscaleStandaloneClient.create({
-        //     connection: {
-        //       id: 1002, // network id
-        //       group: "dev",
-        //       type: 'jrpc',
-        //       data: {
-        //         endpoint: "https://jrpc-devnet.venom.foundation/rpc",
-        //       },
-        //     },
-        //     initInput: '../../node_modules/nekoton-wasm/nekoton_wasm_bg.wasm',
-        //   }),
-        // });
+        this.BioVenomDeployerInstance = new BioVenomDeployer();
         this.walletAbi = SampleWalletAbi;
         this.signer = new BioVenomSigner();
         this.cookie = new BioVenomCookie();
-    }
-    // public getProvider(): ProviderRpcClient {
-    //   return this.provider;
-    // }
-    getAnyWalletContract(address) {
-        const contractAddress = new Address(address);
-        const Provider = new ProviderRpcClient({
+        this.provider = new ProviderRpcClient({
             forceUseFallback: true,
             fallback: () => EverscaleStandaloneClient.create({
                 connection: {
@@ -41,10 +22,15 @@ export class BioVenomProvider {
                         endpoint: "https://jrpc-devnet.venom.foundation/rpc",
                     },
                 },
-                initInput: '../../node_modules/nekoton-wasm/nekoton_wasm_bg.wasm',
             }),
         });
-        const contract = new Provider.Contract(this.walletAbi, contractAddress);
+    }
+    getProvider() {
+        return this.provider;
+    }
+    getAnyWalletContract(address) {
+        const contractAddress = new Address(address);
+        const contract = new this.provider.Contract(this.walletAbi, contractAddress);
         return contract;
     }
     setWalletContract(address) {
@@ -53,18 +39,19 @@ export class BioVenomProvider {
     getWalletContract() {
         return this.walletContract;
     }
-    // public getExpectedContractAddress(deployParams: any) {
-    //   return this.provider.getExpectedAddress(this.walletAbi, deployParams)
-    // }
+    async preCalculateAddress(publicKey) {
+        console.log("reached preCalculateAddress in BioVenomProvider");
+        console.log("preCalculating wallet address");
+        const preCalculatedAddress = await this.BioVenomDeployerInstance.calcWalletAddress(publicKey[0], publicKey[1]);
+        console.log("preCalculated walletAddress: ", preCalculatedAddress);
+        this.setWalletContract(preCalculatedAddress);
+        return preCalculatedAddress;
+    }
     async deployWalletContract(publicKey) {
+        // requires that the wallet contract is prefunded
         try {
-            const response = await axios.post('https://venom-sdk-backend-production.up.railway.app/deploy', {
-                publicKey: publicKey
-            });
-            console.log("response from server", response.data);
-            // const responseBody = JSON.parse(response.data);
-            const walletAddress = response.data.walletAddress;
-            this.walletContract = this.getAnyWalletContract(walletAddress);
+            const walletAddress = await this.BioVenomDeployerInstance.deployWalletContract(publicKey[0], publicKey[1]);
+            console.log("wallet deployed at: ", walletAddress);
             return walletAddress;
         }
         catch (error) {
@@ -97,9 +84,24 @@ export class BioVenomProvider {
             bounce: bounce, userOp: signedTVMCellUserOp }).sendExternal({ withoutSignature: true });
         return response;
     }
+    getBioVenomDeployerInstance() {
+        return this.BioVenomDeployerInstance;
+    }
 }
 // TODO: Add registration logic here
 // TODO: save the credentials to the cookie
-// TODO: Create a server to store the credentials
 // TODO: create a utils folder and add constants and other utility functions
+/**
+ * public
+:
+"24d51af2b22d4b8b412c2b774bd3049c9b99873e1f86734a4de39497f2cd0d1a"
+secret
+:
+"9710b0f0e9e4383485a66843b6b6de1c95bde42d0156c4818d1c182f922b5cf5"
+[[Prototype]]
+:
+Object
+ *
+
+ */ 
 //# sourceMappingURL=BioVenomProvider.js.map

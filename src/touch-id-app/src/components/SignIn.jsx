@@ -9,6 +9,8 @@ const SignIn = ({ onSignIn }) => {
   const [showSignIn, setShowSignIn] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showInput, setShowInput] = useState(false);
+  const [bioVenomInstance, setBioVenomInstance] = React.useState(sharedObject.provider);
+
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
@@ -18,16 +20,6 @@ const SignIn = ({ onSignIn }) => {
     setShowSignIn(true);
     setShowInput(true);
   };
-
-  // // This function could be used to auto sign in
-  // const autoSignIn = async (storedUsername) => {
-  //   const storedCredentials = localStorage.getItem(storedUsername);
-    
-  //   if (storedCredentials) {
-  //     console.log(`Credentials for ${storedUsername} already exist.`);
-  //     onSignIn(storedUsername);
-  //   }
-  // };
 
   useEffect(() => {
     const hasReloaded = localStorage.getItem('hasReloaded');
@@ -50,11 +42,10 @@ const SignIn = ({ onSignIn }) => {
       const publicKey = await getPublicKey(publicKeyCredential.response.attestationObject);
       console.log("username", username);
       const encodedId = encode(publicKeyCredential?.rawId);
-      const venomInstance = sharedObject.provider;
       setLoading(true);
-      const walletAddress = await venomInstance.deployWalletContract(publicKey);
+      const walletAddress = await bioVenomInstance.preCalculateAddress(publicKey);
       setLoading(false);
-      console.log("walletAddress returned from venomInstance", walletAddress);
+      console.log("walletAddress returned from bioVenomInstance", walletAddress);
       console.log("encodedId in signIn", encodedId);
       localStorage.setItem(username, JSON.stringify({ encodedId: encodedId, publicKey: publicKey, walletAddress: walletAddress }));
       localStorage.setItem("username", username);
@@ -67,7 +58,7 @@ const SignIn = ({ onSignIn }) => {
       {loading && (
         <div className="loading-modal">
           <div className="loading-spinner"></div>
-          <h3>Deploying And Prefunding your Wallet with 0.05 Venom...</h3>
+          <h3>Calculating your wallet Address</h3>
         </div>
       )}
       {
