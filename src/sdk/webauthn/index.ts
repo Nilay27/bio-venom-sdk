@@ -225,13 +225,14 @@ export const getSignatureAndFinalMessageToBeSigned = async (credential: any) =>{
 
       // concat authData and clientDataHash to get final data as buffer 
       const finalData = Buffer.concat([authData, cDataHash])
-
+      const hexArrData = finalData.toString('hex')
+      console.log(`finalData unhashed data: ${hexArrData}`)
       // hash the finalData to get finalMessageToBeSigned
       const finalMessageToBeSigned =  await utils.sha256(finalData)
     const signature = await getSignature(credential)
-
+      console.log("r", signature[0])
+      console.log("s", signature[1])
     return {message: finalMessageToBeSigned, r: signature[0], s: signature[1]}
-
 }
 
 export const getRSAndXYCoordinates = async (credential: any, Q: string[]) =>{
