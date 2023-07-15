@@ -7,7 +7,7 @@ export declare class BioVenomProvider {
     private walletContract;
     private unsignedUserOp;
     private cookie;
-    private BioVenomDeployerInstance;
+    private bioVenomDeployerInstance;
     constructor();
     getProvider(): ProviderRpcClient;
     getAnyWalletContract(address: string): Contract<any>;
@@ -20,16 +20,3 @@ export declare class BioVenomProvider {
     executeTransaction(destinationAddress: Address, signedTVMCellUserOp: any, value: any, bounce?: boolean): Promise<any>;
     getBioVenomDeployerInstance(): BioVenomDeployer;
 }
-/**
- * public
-:
-"24d51af2b22d4b8b412c2b774bd3049c9b99873e1f86734a4de39497f2cd0d1a"
-secret
-:
-"9710b0f0e9e4383485a66843b6b6de1c95bde42d0156c4818d1c182f922b5cf5"
-[[Prototype]]
-:
-Object
- *
-
- */ 

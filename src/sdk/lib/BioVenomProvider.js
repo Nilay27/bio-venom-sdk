@@ -7,7 +7,7 @@ import { BioVenomCookie } from './BioVenomCookie';
 import { BioVenomDeployer } from './BioVenomDeployer';
 export class BioVenomProvider {
     constructor() {
-        this.BioVenomDeployerInstance = new BioVenomDeployer();
+        this.bioVenomDeployerInstance = new BioVenomDeployer();
         this.walletAbi = SampleWalletAbi;
         this.signer = new BioVenomSigner();
         this.cookie = new BioVenomCookie();
@@ -42,7 +42,7 @@ export class BioVenomProvider {
     async preCalculateAddress(publicKey) {
         console.log("reached preCalculateAddress in BioVenomProvider");
         console.log("preCalculating wallet address");
-        const preCalculatedAddress = await this.BioVenomDeployerInstance.calcWalletAddress(publicKey[0], publicKey[1]);
+        const preCalculatedAddress = await this.bioVenomDeployerInstance.calcWalletAddress(publicKey[0], publicKey[1]);
         console.log("preCalculated walletAddress: ", preCalculatedAddress);
         this.setWalletContract(preCalculatedAddress);
         return preCalculatedAddress;
@@ -50,7 +50,7 @@ export class BioVenomProvider {
     async deployWalletContract(publicKey) {
         // requires that the wallet contract is prefunded
         try {
-            const walletAddress = await this.BioVenomDeployerInstance.deployWalletContract(publicKey[0], publicKey[1]);
+            const walletAddress = await this.bioVenomDeployerInstance.deployWalletContract(publicKey[0], publicKey[1]);
             console.log("wallet deployed at: ", walletAddress);
             return walletAddress;
         }
@@ -85,23 +85,10 @@ export class BioVenomProvider {
         return response;
     }
     getBioVenomDeployerInstance() {
-        return this.BioVenomDeployerInstance;
+        return this.bioVenomDeployerInstance;
     }
 }
 // TODO: Add registration logic here
 // TODO: save the credentials to the cookie
 // TODO: create a utils folder and add constants and other utility functions
-/**
- * public
-:
-"24d51af2b22d4b8b412c2b774bd3049c9b99873e1f86734a4de39497f2cd0d1a"
-secret
-:
-"9710b0f0e9e4383485a66843b6b6de1c95bde42d0156c4818d1c182f922b5cf5"
-[[Prototype]]
-:
-Object
- *
-
- */ 
 //# sourceMappingURL=BioVenomProvider.js.map
