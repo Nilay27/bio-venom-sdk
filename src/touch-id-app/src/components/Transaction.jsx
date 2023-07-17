@@ -44,7 +44,7 @@ const Transaction = ({ action, actionValue, handleTxReload }) => {
     }
 
     const handleWalletAddressClick = () => {
-      window.open('https://devnet.venomscan.com/accounts/'+ walletAddress, '_blank');
+      window.open('https://testnet.venomscan.com/accounts/'+ walletAddress, '_blank');
     }
 
   

@@ -5,6 +5,7 @@ import {GiverAbi} from "./deployHelpers/GiverAbi";
 import axios from 'axios';
 import { Buffer } from 'buffer/';
 import nacl from 'tweetnacl';
+import * as Constants from './Constants';
 
 //@ts-ignore
 TonClient.useBinaryLibrary(libWeb);
@@ -18,7 +19,7 @@ export class BioVenomDeployer {
         // console.log("initialising constructor with giver address: ", giverAddress)
         this.tonClient = new TonClient({
             network: {
-                endpoints: ['https://gql-devnet.venom.network/graphql'],
+                endpoints: [Constants.TestnetGraphQL],
             },
         });
         const keyPair = nacl.sign.keyPair();
@@ -97,6 +98,7 @@ export class BioVenomDeployer {
              this.setDeployOptions(Q0, Q1);
         }
         const address = await this.calcWalletAddress(Q0, Q1);
+        console.log("address of wallet to be deployed: ", address)
         const balanceHex = await this.getAccountBalance(address);
         const balance = BigInt(balanceHex);
         console.log("balance of wallet to be deployed", balance)
