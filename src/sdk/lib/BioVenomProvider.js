@@ -5,6 +5,7 @@ import { SampleWalletAbi } from "./abis/SampleWalletAbi";
 import { BioVenomSigner } from "./BioVenomSigner";
 import { BioVenomCookie } from './BioVenomCookie';
 import { BioVenomDeployer } from './BioVenomDeployer';
+import * as Constants from './Constants';
 export class BioVenomProvider {
     constructor() {
         this.bioVenomDeployerInstance = new BioVenomDeployer();
@@ -19,7 +20,7 @@ export class BioVenomProvider {
                     group: "dev",
                     type: 'jrpc',
                     data: {
-                        endpoint: "https://jrpc-devnet.venom.foundation/rpc",
+                        endpoint: Constants.TestnetRPC,
                     },
                 },
             }),
