@@ -44,32 +44,70 @@ export const createCredential = async (
 ): Promise<Credential | null> => {
   console.log('createCredential reached with username', username)
   // const userId = await utils.sha256(new TextEncoder().encode(username));
-  const userId = utils.parseBase64url(uuidv4())
-  const pubKeyCredParams= { type: 'public-key', alg: -7 } as PublicKeyCredentialParameters
+  const userId = utils.parseBase64url(uuidv4());
+  const pubKeyCredParams = { type: 'public-key', alg: -7 } as PublicKeyCredentialParameters;
   const isPlatformSupported = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
-  const authenticationSupport = isPlatformSupported ? 'platform': 'cross-platform';
-  console.log('pubKeyCredParams', pubKeyCredParams)
-  console.log('userId', userId)
-  const publicKeyCredential =  await navigator.credentials.create({
-    publicKey: {
-      rp: {
-        id: window.location.hostname,
-        name: 'Bio Venom Wallet',
-      },
-      user: {
-        id: userId,
-        name: username,
-        displayName: username,
-      },
-      challenge: utils.parseBase64url(uuidv4()),
-      pubKeyCredParams: [pubKeyCredParams],
-      attestation: 'none',
-      authenticatorSelection: {
-        userVerification: 'required', // Webauthn default is "preferred"
-        authenticatorAttachment: authenticationSupport,
-      },
-    },
-  });
+  let authenticationSupport: 'platform' | 'cross-platform' = isPlatformSupported ? 'platform' : 'cross-platform';
+
+  console.log('pubKeyCredParams', pubKeyCredParams);
+  console.log('userId', userId);
+
+  let publicKeyCredential;
+
+try {
+    publicKeyCredential = await navigator.credentials.create({
+        publicKey: {
+            rp: {
+                id: window.location.hostname,
+                name: 'Bio Venom Wallet',
+            },
+            user: {
+                id: userId,
+                name: username,
+                displayName: username,
+            },
+            challenge: utils.parseBase64url(uuidv4()),
+            pubKeyCredParams: [pubKeyCredParams],
+            attestation: 'none',
+            authenticatorSelection: {
+                userVerification: 'required',
+                authenticatorAttachment: authenticationSupport,
+            },
+        },
+    });
+} catch (error) {
+    if (authenticationSupport === 'platform') {
+        console.error('Error with platform authenticator. Retrying with cross-platform.', error);
+        authenticationSupport = 'cross-platform';
+        try {
+            publicKeyCredential = await navigator.credentials.create({
+                publicKey: {
+                    rp: {
+                        id: window.location.hostname,
+                        name: 'Bio Venom Wallet',
+                    },
+                    user: {
+                        id: userId,
+                        name: username,
+                        displayName: username,
+                    },
+                    challenge: utils.parseBase64url(uuidv4()),
+                    pubKeyCredParams: [pubKeyCredParams],
+                    attestation: 'none',
+                    authenticatorSelection: {
+                        userVerification: 'required',
+                        authenticatorAttachment: authenticationSupport,
+                    },
+                },
+            });
+        } catch (secondError) {
+            console.error('Error with cross-platform authenticator.', secondError);
+        }
+    } else {
+        console.error('Error with cross-platform authenticator.', error);
+    }
+}
+
   if (publicKeyCredential === null) {
     // alert('Failed to get credential')
     return Promise.reject(new Error('Failed to create credential'))
