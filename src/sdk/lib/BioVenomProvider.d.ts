@@ -8,6 +8,8 @@ export declare class BioVenomProvider {
     private unsignedUserOp;
     private cookie;
     private bioVenomDeployerInstance;
+    private tonClient;
+    private walletAddress;
     constructor();
     getProvider(): ProviderRpcClient;
     getAnyWalletContract(address: string): Contract<any>;
@@ -16,6 +18,8 @@ export declare class BioVenomProvider {
     preCalculateAddress(publicKey: any): Promise<string>;
     deployWalletContract(publicKey: any): Promise<string>;
     createUnsignedUserOp(encodedPayload: any, value?: number): Promise<any>;
+    encodeSignatureParams(rs: any, x1: any, y1: any, x2: any, y2: any): Promise<any>;
+    encodeUserOperation(encodedSignature: any, encodedPayload: any, value?: number): Promise<any>;
     signTvmCellUserOp(unsignedUserOp: any, encodedId: any, pubkey: any): Promise<any>;
     executeTransaction(destinationAddress: Address, signedTVMCellUserOp: any, value: any, bounce?: boolean): Promise<any>;
     getBioVenomDeployerInstance(): BioVenomDeployer;

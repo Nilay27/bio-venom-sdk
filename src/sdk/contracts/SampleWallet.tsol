@@ -62,6 +62,10 @@ contract Wallet is EllipticCurve{
         return result;
     }
 
+    function getNonce() external view returns (uint256){
+        return nonce;
+    }
+
 
     /// @dev Allows to transfer tons to the destination account.
     /// @param dest Transfer target address.
