@@ -1,4 +1,4 @@
-import { Signer } from '@eversdk/core';
+import { TonClient, Signer } from '@eversdk/core';
 export declare class BioVenomDeployer {
     private tonClient;
     private randomKeysForDeployment?;
@@ -15,10 +15,13 @@ export declare class BioVenomDeployer {
      */
     setRandomKeysForDeployment(): Promise<void>;
     setDeployOptions(Q0: string, Q1: string): void;
+    getTonClient(): TonClient;
     calcWalletAddress(Q0: string, Q1: string): Promise<string>;
     deployWalletContract(Q0: string, Q1: string): Promise<string>;
     prefundDeployedWalletViaSigner(source: string, dest: string, value: number, giverSigner?: Signer): Promise<boolean>;
     prefundDeployedWalletViaBackend(url: string, dest: string): Promise<boolean>;
     changePrefundingAmount(amount: number): void;
     getAccountBalance(address: string): Promise<string>;
+    getAccount(address: string): Promise<any>;
+    runGetMethod(methodName: any, address: any): Promise<any>;
 }

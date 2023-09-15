@@ -64,6 +64,9 @@ export class BioVenomDeployer {
             signer: randomSigner,
         };
     }
+    getTonClient() {
+        return this.tonClient;
+    }
     async calcWalletAddress(Q0, Q1) {
         console.log("reached calculating address");
         if (!this.randomKeysForDeployment) {
@@ -184,6 +187,62 @@ export class BioVenomDeployer {
                 reject(error);
             }
         });
+    }
+    async getAccount(address) {
+        // `boc` or bag of cells - native blockchain data layout. Account's boc contains full account state (code and data) that
+        // we will  need to execute get methods.
+        const query = `
+            query {
+              blockchain {
+                account(
+                  address: "${address}"
+                ) {
+                   info {
+                    boc
+                  }
+                }
+              }
+            }`;
+        const { result } = await this.tonClient.net.query({ query });
+        const info = result.data.blockchain.account.info;
+        return info;
+    }
+    async runGetMethod(methodName, address) {
+        // Execute the get method `getTimestamp` on the latest account's state
+        // This can be managed in 3 steps:
+        // 1. Download the latest Account State (BOC) 
+        // 2. Encode message
+        // 3. Execute the message locally on the downloaded state
+        const accountState = await this.getAccount(address);
+        // Encode the message with `getTimestamp` call
+        const { message } = await this.tonClient.abi.encode_message({
+            // Define contract ABI in the Application
+            // See more info about ABI type here:
+            // https://github.com/tonlabs/ever-sdk/blob/master/docs/reference/types-and-methods/mod_abi.md#abi
+            abi: {
+                type: 'Contract',
+                value: SampleWalletContract.abi,
+            },
+            address,
+            call_set: {
+                function_name: methodName,
+                input: {},
+            },
+            signer: { type: 'None' },
+        });
+        // Execute `getTimestamp` get method  (execute the message locally on TVM)
+        // See more info about run_tvm method here:
+        // https://github.com/tonlabs/ever-sdk/blob/master/docs/reference/types-and-methods/mod_tvm.md#run_tvm
+        console.log('Run `getTimestamp` get method');
+        const response = await this.tonClient.tvm.run_tvm({
+            message,
+            account: accountState.boc,
+            abi: {
+                type: 'Contract',
+                value: SampleWalletContract.abi,
+            },
+        });
+        return response.decoded.output;
     }
 }
 //# sourceMappingURL=BioVenomDeployer.js.map
