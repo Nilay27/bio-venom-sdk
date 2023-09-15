@@ -25,22 +25,22 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
-    "@eversdk/core": "1.43.3",
-    "@eversdk/lib-web": "1.43.3",
-    "@peculiar/asn1-ecc": "2.3.6",
-    "@peculiar/asn1-schema": "2.3.6",
-    "@simplewebauthn/typescript-types": "7.0.0",
-    "@types/uuid": "9.0.0",
+    "@eversdk/core": "^1.43.3",
+    "@eversdk/lib-web": "^1.43.3",
+    "@peculiar/asn1-ecc": "^2.3.6",
+    "@peculiar/asn1-schema": "^2.3.6",
+    "@simplewebauthn/typescript-types": "^7.0.0",
+    "@types/uuid": "^9.0.0",
     "axios": "^1.4.0",
-    "base64url": "3.0.1",
-    "crypto-js": "4.1.1",
-    "dotenv": "16.3.1",
-    "elliptic": "6.5.4",
-    "everdev": "1.7.0",
-    "everscale-inpage-provider": "0.3.61",
-    "everscale-standalone-client": "2.1.19",
-    "tweetnacl": "1.0.3",
-    "uuid": "9.0.0",
-    "venom-connect": "1.0.20"
+    "base64url": "^3.0.1",
+    "crypto-js": "^4.1.1",
+    "dotenv": "^16.3.1",
+    "elliptic": "^6.5.4",
+    "everdev": "^1.7.0",
+    "everscale-inpage-provider": "^0.3.61",
+    "everscale-standalone-client": "^2.1.19",
+    "tweetnacl": "^1.0.3",
+    "uuid": "^9.0.0",
+    "venom-connect": "^1.0.20"
   }
 }
