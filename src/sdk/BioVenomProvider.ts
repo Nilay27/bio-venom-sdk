@@ -40,6 +40,14 @@ export class BioVenomProvider {
           },
         }),
     });
+    const userName = localStorage.getItem('username');
+    const credential = JSON.parse(localStorage.getItem(userName) || '{}');
+    // if credential is null or credential.walletAddress is null, set wallet address to empty string else set it to credential.walletAddress
+    if (!credential || !credential.walletAddress) {
+      this.walletAddress = '';
+    } else {
+      this.walletAddress = credential.walletAddress;
+    }
   }
 
   public getProvider(): ProviderRpcClient {

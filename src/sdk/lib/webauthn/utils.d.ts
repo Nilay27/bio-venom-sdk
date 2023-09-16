@@ -1,7 +1,7 @@
 /********************************
      Encoding/Decoding Utils
 ********************************/
-export declare function randomChallenge(): string;
+export declare function randomChallenge(): `${string}-${string}-${string}-${string}-${string}`;
 export declare function toBuffer(txt: string): ArrayBuffer;
 export declare function Uint8ArrayToHex(u8a: Uint8Array): string;
 export declare function parseBuffer(buffer: ArrayBuffer): string;

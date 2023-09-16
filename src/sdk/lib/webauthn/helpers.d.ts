@@ -1,5 +1,5 @@
 export declare var bufferToString: (buff: any) => string;
-export declare var getEndian: () => "big" | "little";
+export declare var getEndian: () => "little" | "big";
 export declare var readBE16: (buffer: any) => number;
 export declare var readBE32: (buffer: any) => number;
 export declare var bufToHex: (buffer: any) => any;
