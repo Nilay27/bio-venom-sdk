@@ -1,64 +1,60 @@
 export const GiverAbi = {
-    "ABI version": 2,
-    "data": [],
-    "events": [],
-    "fields": [
+    'ABI version': 2,
+    data: [],
+    events: [],
+    fields: [
         {
-            "name": "_pubkey",
-            "type": "uint256"
+            name: '_pubkey',
+            type: 'uint256',
         },
         {
-            "name": "_timestamp",
-            "type": "uint64"
-        }
+            name: '_timestamp',
+            type: 'uint64',
+        },
     ],
-    "functions": [
+    functions: [
         {
-            "inputs": [
+            inputs: [
                 {
-                    "name": "dest",
-                    "type": "address"
+                    name: 'dest',
+                    type: 'address',
                 },
                 {
-                    "name": "value",
-                    "type": "uint128"
+                    name: 'value',
+                    type: 'uint128',
                 },
                 {
-                    "name": "bounce",
-                    "type": "bool"
+                    name: 'bounce',
+                    type: 'bool',
                 },
                 {
-                    "name": "flags",
-                    "type": "uint8"
+                    name: 'flags',
+                    type: 'uint8',
                 },
                 {
-                    "name": "payload",
-                    "type": "cell"
-                }
+                    name: 'payload',
+                    type: 'cell',
+                },
             ],
-            "name": "sendTransaction",
-            "outputs": []
+            name: 'sendTransaction',
+            outputs: [],
         },
         {
-            "inputs": [
+            inputs: [
                 {
-                    "name": "flags",
-                    "type": "uint8"
+                    name: 'flags',
+                    type: 'uint8',
                 },
                 {
-                    "name": "message",
-                    "type": "cell"
-                }
+                    name: 'message',
+                    type: 'cell',
+                },
             ],
-            "name": "sendTransactionRaw",
-            "outputs": []
-        }
+            name: 'sendTransactionRaw',
+            outputs: [],
+        },
     ],
-    "header": [
-        "pubkey",
-        "time",
-        "expire"
-    ],
-    "version": "2.3"
+    header: ['pubkey', 'time', 'expire'],
+    version: '2.3',
 };
 //# sourceMappingURL=GiverAbi.js.map

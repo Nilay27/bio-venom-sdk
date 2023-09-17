@@ -46,7 +46,7 @@ export function parseBase64url(txt) {
 export var sha256 = async (data) => {
     const hash = await window.crypto.subtle.digest('SHA-256', data);
     const hashArray = Array.from(new Uint8Array(hash));
-    const digest = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    const digest = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
     return '0x' + digest;
 };
 export var sha256Buffer = async (data) => {
@@ -54,9 +54,7 @@ export var sha256Buffer = async (data) => {
     return hashBuffer;
 };
 export function bufferToHex(buffer) {
-    return [...new Uint8Array(buffer)]
-        .map((b) => b.toString(16).padStart(2, '0'))
-        .join('');
+    return [...new Uint8Array(buffer)].map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 export function concatenateBuffers(buffer1, buffer2) {
     var tmp = new Uint8Array(buffer1.byteLength + buffer2.byteLength);

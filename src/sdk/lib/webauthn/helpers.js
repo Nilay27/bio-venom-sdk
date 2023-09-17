@@ -30,9 +30,7 @@ export var readBE32 = (buffer) => {
 };
 export var bufToHex = (buffer) => {
     // buffer is an ArrayBuffer
-    return Array.prototype.map
-        .call(new Uint8Array(buffer), (x) => ('00' + x.toString(16)).slice(-2))
-        .join('');
+    return Array.prototype.map.call(new Uint8Array(buffer), (x) => ('00' + x.toString(16)).slice(-2)).join('');
 };
 // https://gist.github.com/herrjemand/dbeb2c2b76362052e5268224660b6fbc
 export var parseAuthData = (buffer) => {

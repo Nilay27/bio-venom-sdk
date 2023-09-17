@@ -17,8 +17,7 @@ export function encode(value: any) {
       data = new ArrayBuffer(newByteLength);
       dataView = new DataView(data);
       var uint32count = (offset + 3) >> 2;
-      for (var i = 0; i < uint32count; ++i)
-        dataView.setUint32(i << 2, oldDataView.getUint32(i << 2));
+      for (var i = 0; i < uint32count; ++i) dataView.setUint32(i << 2, oldDataView.getUint32(i << 2));
     }
 
     lastLength = length;
@@ -37,8 +36,7 @@ export function encode(value: any) {
   }
   function writeUint8Array(value: any) {
     var dataView = prepareWrite(value.length);
-    for (var i = 0; i < value.length; ++i)
-      dataView.setUint8(offset + i, value[i]);
+    for (var i = 0; i < value.length; ++i) dataView.setUint8(offset + i, value[i]);
     commitWrite();
   }
   function writeUint16(value: any) {
@@ -86,10 +84,8 @@ export function encode(value: any) {
     switch (typeof value) {
       case 'number':
         if (Math.floor(value) === value) {
-          if (0 <= value && value <= POW_2_53)
-            return writeTypeAndLength(0, value);
-          if (-POW_2_53 <= value && value < 0)
-            return writeTypeAndLength(1, -(value + 1));
+          if (0 <= value && value <= POW_2_53) return writeTypeAndLength(0, value);
+          if (-POW_2_53 <= value && value < 0) return writeTypeAndLength(1, -(value + 1));
         }
         writeUint8(0xfb);
         return writeFloat64(value);
@@ -187,10 +183,7 @@ export function decode(data: any, tagger: any, simpleValue: any) {
     else if (exponent !== 0) exponent += (127 - 15) << 10;
     else if (fraction !== 0) return (sign ? -1 : 1) * fraction * POW_2_24;
 
-    tempDataView.setUint32(
-      0,
-      (sign << 16) | (exponent << 13) | (fraction << 13)
-    );
+    tempDataView.setUint32(0, (sign << 16) | (exponent << 13) | (fraction << 13));
     return tempDataView.getFloat32(0);
   }
   function readFloat32() {
@@ -229,8 +222,7 @@ export function decode(data: any, tagger: any, simpleValue: any) {
     var initialByte = readUint8();
     if (initialByte === 0xff) return -1;
     var length = readLength(initialByte & 0x1f);
-    if (length < 0 || initialByte >> 5 !== majorType)
-      throw 'Invalid indefinite length element';
+    if (length < 0 || initialByte >> 5 !== majorType) throw 'Invalid indefinite length element';
     return length;
   }
 
@@ -242,17 +234,11 @@ export function decode(data: any, tagger: any, simpleValue: any) {
           value = ((value & 0x1f) << 6) | (readUint8() & 0x3f);
           length -= 1;
         } else if (value < 0xf0) {
-          value =
-            ((value & 0x0f) << 12) |
-            ((readUint8() & 0x3f) << 6) |
-            (readUint8() & 0x3f);
+          value = ((value & 0x0f) << 12) | ((readUint8() & 0x3f) << 6) | (readUint8() & 0x3f);
           length -= 2;
         } else {
           value =
-            ((value & 0x0f) << 18) |
-            ((readUint8() & 0x3f) << 12) |
-            ((readUint8() & 0x3f) << 6) |
-            (readUint8() & 0x3f);
+            ((value & 0x0f) << 18) | ((readUint8() & 0x3f) << 12) | ((readUint8() & 0x3f) << 6) | (readUint8() & 0x3f);
           length -= 3;
         }
       }
@@ -313,8 +299,7 @@ export function decode(data: any, tagger: any, simpleValue: any) {
       case 3:
         var utf16data: any = [];
         if (length < 0) {
-          while ((length = readIndefiniteStringLength(majorType)) >= 0)
-            appendUtf16Data(utf16data, length);
+          while ((length = readIndefiniteStringLength(majorType)) >= 0) appendUtf16Data(utf16data, length);
         } else appendUtf16Data(utf16data, length);
         return String.fromCharCode.apply(null, utf16data);
       case 4:

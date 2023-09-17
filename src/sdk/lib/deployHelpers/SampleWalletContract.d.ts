@@ -1,6 +1,6 @@
 export declare const SampleWalletContract: {
     abi: {
-        "ABI version": number;
+        'ABI version': number;
         version: string;
         header: string[];
         functions: {

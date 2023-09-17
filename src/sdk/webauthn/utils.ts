@@ -20,14 +20,14 @@ export function randomChallenge() {
 }
 
 export function toBuffer(txt: string): ArrayBuffer {
-  console.log('toBuffer reached with txt', txt)
+  console.log('toBuffer reached with txt', txt);
   return Uint8Array.from(txt, (c) => c.charCodeAt(0)).buffer;
 }
 
 export function Uint8ArrayToHex(u8a: Uint8Array): string {
   let hexString = '';
   for (let i = 0; i < u8a.length; i++) {
-      hexString += u8a[i].toString(16).padStart(2, '0');
+    hexString += u8a[i].toString(16).padStart(2, '0');
   }
   return hexString;
 }
@@ -54,20 +54,18 @@ export function parseBase64url(txt: string): ArrayBuffer {
 
 export var sha256 = async (data: any) => {
   const hash = await window.crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hash))
-  const digest = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  return '0x' + digest
-}
+  const hashArray = Array.from(new Uint8Array(hash));
+  const digest = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+  return '0x' + digest;
+};
 
 export var sha256Buffer = async (data: any) => {
   const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
-  return hashBuffer
-}
+  return hashBuffer;
+};
 
 export function bufferToHex(buffer: ArrayBuffer): string {
-  return [...new Uint8Array(buffer)]
-    .map((b) => b.toString(16).padStart(2, '0'))
-    .join('');
+  return [...new Uint8Array(buffer)].map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
 export function concatenateBuffers(buffer1: ArrayBuffer, buffer2: ArrayBuffer) {

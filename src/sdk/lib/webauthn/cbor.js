@@ -246,18 +246,12 @@ export function decode(data, tagger, simpleValue) {
                     length -= 1;
                 }
                 else if (value < 0xf0) {
-                    value =
-                        ((value & 0x0f) << 12) |
-                            ((readUint8() & 0x3f) << 6) |
-                            (readUint8() & 0x3f);
+                    value = ((value & 0x0f) << 12) | ((readUint8() & 0x3f) << 6) | (readUint8() & 0x3f);
                     length -= 2;
                 }
                 else {
                     value =
-                        ((value & 0x0f) << 18) |
-                            ((readUint8() & 0x3f) << 12) |
-                            ((readUint8() & 0x3f) << 6) |
-                            (readUint8() & 0x3f);
+                        ((value & 0x0f) << 18) | ((readUint8() & 0x3f) << 12) | ((readUint8() & 0x3f) << 6) | (readUint8() & 0x3f);
                     length -= 3;
                 }
             }

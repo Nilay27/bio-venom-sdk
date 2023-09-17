@@ -1,16 +1,15 @@
-import { sign } from "crypto";
+import { sign } from 'crypto';
 
 async function main() {
-  const signer = (await locklift.keystore.getSigner("0"))!;
-  console.log("signer while deploying", signer)
+  const signer = (await locklift.keystore.getSigner('0'))!;
+  console.log('signer while deploying', signer);
   const { contract: sample, tx } = await locklift.factory.deployContract({
-    contract: "EllipticCurve2",
+    contract: 'EllipticCurve2',
     publicKey: signer.publicKey,
     initParams: {
       _nonce: locklift.utils.getRandomNonce(),
     },
-    constructorParams: {
-    },
+    constructorParams: {},
     value: locklift.utils.toNano(0.1),
   });
 
@@ -18,14 +17,11 @@ async function main() {
 }
 
 main()
-  .then(
-    
-    () => {
-      console.log(process.env.SEED)
-      process.exit(0)
-    }
-    )
-  .catch(e => {
+  .then(() => {
+    console.log(process.env.SEED);
+    process.exit(0);
+  })
+  .catch((e) => {
     console.log(e);
     process.exit(1);
   });

@@ -1,5 +1,5 @@
 const constructUniqueIdentifier = (identifier: string, dappName: string) => {
-    return identifier + dappName;
-}
+  return identifier + dappName;
+};
 
-export default constructUniqueIdentifier
+export default constructUniqueIdentifier;

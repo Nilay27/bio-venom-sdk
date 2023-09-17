@@ -1,5 +1,5 @@
 export declare const GiverAbi: {
-    "ABI version": number;
+    'ABI version': number;
     data: any[];
     events: any[];
     fields: {
