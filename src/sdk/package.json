@@ -7,7 +7,7 @@
     "lib"
   ],
   "scripts": {
-    "build": "tsc && npx prettier --write **/*.{ts,js}",
+    "build": "tsc && npx prettier --write '**/*.{ts,js}'",
     "test": "npx locklift test --network local"
   },
   "author": "",

@@ -1,11 +1,4 @@
-import {
-  ParamsOfEncodeMessage,
-  ParamsOfProcessMessage,
-  TonClient,
-  abiContract,
-  Signer,
-  KeyPair,
-} from '@eversdk/core';
+import { ParamsOfEncodeMessage, ParamsOfProcessMessage, TonClient, abiContract, Signer, KeyPair } from '@eversdk/core';
 import { libWeb } from '@eversdk/lib-web';
 import { SampleWalletContract } from './deployHelpers/SampleWalletContract';
 import { GiverAbi } from './deployHelpers/GiverAbi';
@@ -30,10 +23,7 @@ export class BioVenomDeployer {
       },
     });
     const keyPair = nacl.sign.keyPair();
-    const privateKeyOnly = keyPair.secretKey.slice(
-      0,
-      nacl.sign.publicKeyLength,
-    );
+    const privateKeyOnly = keyPair.secretKey.slice(0, nacl.sign.publicKeyLength);
 
     this.randomKeysForDeployment = {
       public: Buffer.from(keyPair.publicKey).toString('hex'),
@@ -50,8 +40,7 @@ export class BioVenomDeployer {
    * @returns randomKeysForDeployment
    */
   public async setRandomKeysForDeployment() {
-    this.randomKeysForDeployment =
-      await this.tonClient.crypto.generate_random_sign_keys();
+    this.randomKeysForDeployment = await this.tonClient.crypto.generate_random_sign_keys();
   }
 
   public setDeployOptions(Q0: string, Q1: string) {
@@ -98,9 +87,7 @@ export class BioVenomDeployer {
     if (!this.deployOptions || Object.keys(this.deployOptions).length === 0) {
       this.setDeployOptions(Q0, Q1);
     }
-    const { address } = await this.tonClient.abi.encode_message(
-      this.deployOptions,
-    );
+    const { address } = await this.tonClient.abi.encode_message(this.deployOptions);
     return address;
   }
 
@@ -167,20 +154,14 @@ export class BioVenomDeployer {
     try {
       await this.tonClient.processing.process_message(params);
     } catch (error) {
-      console.error(
-        'Error transfering tokens from giver to wallet contract: ',
-        error,
-      );
+      console.error('Error transfering tokens from giver to wallet contract: ', error);
       throw error;
     }
     console.log('Success. Tokens were transfered\n');
     return true;
   }
 
-  public async prefundDeployedWalletViaBackend(
-    url: string,
-    dest: string,
-  ): Promise<boolean> {
+  public async prefundDeployedWalletViaBackend(url: string, dest: string): Promise<boolean> {
     // check if dest is already prefunded by checking balance, if balance > 0, return
     const balance = await this.getAccountBalance(dest);
     // TODO: remove this logic in future and ensure handling in UI
@@ -188,9 +169,7 @@ export class BioVenomDeployer {
       console.log('wallet already prefunded');
       return true;
     }
-    console.log(
-      `Transfering ${this.prefundingAmount} tokens from giver to ${dest}`,
-    );
+    console.log(`Transfering ${this.prefundingAmount} tokens from giver to ${dest}`);
     try {
       const response = await axios.post(url, {
         dest: dest,
