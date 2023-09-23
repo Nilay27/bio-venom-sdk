@@ -6,6 +6,7 @@ import { BioVenomSigner } from './BioVenomSigner';
 import { BioVenomCookie } from './BioVenomCookie';
 import { BioVenomDeployer } from './BioVenomDeployer';
 import * as Constants from './Constants';
+import axios from 'axios';
 export class BioVenomProvider {
   constructor() {
     this.walletAddress = '';
@@ -37,6 +38,23 @@ export class BioVenomProvider {
       this.walletAddress = credential.walletAddress;
     }
   }
+  async checkUsername(username) {
+    try {
+      const response = await axios.post(Constants.CHECKUSERNAME_URL, {
+        username: username,
+      });
+      return true;
+    } catch (error) {
+      if (error.response && error.response.status == 409) {
+        throw new Error('Username already taken');
+      } else if (error.response && error.response.status == 500) {
+        throw new Error('Internal server error');
+      } else {
+        console.error('Error checking username: ', error);
+        throw error;
+      }
+    }
+  }
   getProvider() {
     return this.provider;
   }
@@ -59,12 +77,36 @@ export class BioVenomProvider {
     this.setWalletContract(preCalculatedAddress);
     return preCalculatedAddress;
   }
+  async saveCredentials() {
+    const userName = localStorage.getItem('username');
+    const credential = JSON.parse(localStorage.getItem(userName) || '{}');
+    if (!credential || !credential.walletAddress) {
+      throw new Error('Credentials not saved locally');
+    }
+    try {
+      const response = await axios.post(Constants.DATAURL, {
+        username: userName,
+        walletAddress: credential.walletAddress,
+        encodedId: credential.encodedId,
+        publicKey: credential.publicKey,
+      });
+      // check the status code of the response
+      if (response.status == 500) {
+        throw new Error('Internal server error while saving username');
+      }
+    } catch (error) {
+      console.error('Error saving usename: ', error);
+      throw error;
+    }
+    return true;
+  }
   async deployWalletContract(publicKey) {
     // requires that the wallet contract is prefunded
     try {
       const walletAddress = await this.bioVenomDeployerInstance.deployWalletContract(publicKey[0], publicKey[1]);
       console.log('wallet deployed at: ', walletAddress);
       this.walletAddress = walletAddress;
+      await this.saveCredentials();
       return walletAddress;
     } catch (error) {
       console.error('Error deploying contract: ', error);

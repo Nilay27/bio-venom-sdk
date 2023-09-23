@@ -11,11 +11,13 @@ export declare class BioVenomProvider {
   private tonClient;
   private walletAddress;
   constructor();
+  checkUsername(username: string): Promise<boolean>;
   getProvider(): ProviderRpcClient;
   getAnyWalletContract(address: string): Contract<any>;
   setWalletContract(address: string): void;
   getWalletContract(): any;
   preCalculateAddress(publicKey: any): Promise<string>;
+  saveCredentials(): Promise<boolean>;
   deployWalletContract(publicKey: any): Promise<string>;
   createUnsignedUserOp(encodedPayload: any, value?: number): Promise<any>;
   encodeSignatureParams(rs: any, x1: any, y1: any, x2: any, y2: any): Promise<any>;

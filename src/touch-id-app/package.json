@@ -1,20 +1,25 @@
 {
-  "name": "touch-id-app",
+  "name": "biovenomsdk-demo",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.16.5",
+    "@chakra-ui/react": "^2.8.1",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "bio-venom-sdk": "file:../sdk/bio-venom-sdk-1.0.0.tgz",
+    "bio-venom-sdk": "file:biovenom/bio-venom-sdk-1.0.0.tgz",
+    "framer-motion": "^10.16.4",
+    "prettier": "^3.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && cp ./node_modules/bio-venom-sdk/lib/eversdk.wasm ./build",
+    "build": "npx prettier --write '**/*.js' && react-scripts build && cp ./node_modules/bio-venom-sdk/lib/eversdk.wasm ./build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -37,7 +42,6 @@
     ]
   },
   "devDependencies": {
-    "react-app-rewired": "^2.2.1",
-    "sass": "^1.63.3"
+    "react-app-rewired": "^2.2.1"
   }
 }

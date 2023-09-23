@@ -54,7 +54,8 @@ export const createCredential = async (username: string): Promise<Credential | n
   console.log('userId', userId);
 
   let publicKeyCredential;
-
+  //TODO: ensure webauthn across websites works, will need to change rp.id to be the same for all websites
+  //TODO: this would mean we would need to redirect to a website that has the same rp.id
   try {
     publicKeyCredential = await navigator.credentials.create({
       publicKey: {

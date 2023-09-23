@@ -1,5 +1,5 @@
 import { BioVenomProvider } from 'bio-venom-sdk';
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 
 const SDKContext = createContext();
 
@@ -9,11 +9,7 @@ const SDKContextProvider = ({ children }) => {
     provider: new BioVenomProvider(),
   });
 
-  return (
-    <SDKContext.Provider value={sharedObject}>
-      {children}
-    </SDKContext.Provider>
-  );
+  return <SDKContext.Provider value={sharedObject}>{children}</SDKContext.Provider>;
 };
 
 export { SDKContext, SDKContextProvider };
