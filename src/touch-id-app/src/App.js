@@ -59,7 +59,7 @@ function App() {
     const urlParams = new URLSearchParams(window.location.search);
     const source = urlParams.get('source');
     console.log('source', source);
-    if (source && source.includes('biovenomsdk.com')) {
+    if (source && source.includes('bivenomsdk.com')) {
         // ... (rest of the logic remains the same)
         console.log('Valid source');
         let taskValue = localStorage.getItem('username');
