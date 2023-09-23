@@ -4,7 +4,6 @@ import Navbar from './components/Navbar';
 import Main from './components/Main';
 import { useState, useEffect } from 'react';
 import { SDKContextProvider } from './context/SDKContext';
-import { use } from 'marked';
 
 function App() {
   const { isOpen: isconnectOpen, onOpen: onconnectOpen, onClose: onconnectClose } = useDisclosure();
