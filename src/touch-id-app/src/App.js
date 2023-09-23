@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Main from './components/Main';
 import { useState, useEffect } from 'react';
 import { SDKContextProvider } from './context/SDKContext';
+import { PARTNER_SITES } from './Constants';
 
 function App() {
   const { isOpen: isconnectOpen, onOpen: onconnectOpen, onClose: onconnectClose } = useDisclosure();
@@ -59,7 +60,7 @@ function App() {
     const urlParams = new URLSearchParams(window.location.search);
     const source = urlParams.get('source');
     console.log('source', source);
-    if (source && source.includes('bivenomsdk.com')) {
+    if (source && PARTNER_SITES.includes('bivenomsdk.com')) {
         // ... (rest of the logic remains the same)
         console.log('Valid source');
         let taskValue = localStorage.getItem('username');
