@@ -55,24 +55,33 @@ function App() {
       setUsername(username);
       setIsLoggedIn(loggedIn);
     }
-    console.log('document referrer', document.referrer);
-    if (document.referrer.includes('bivenomsdk.com')) {
-      // Read values from localStorage
-      let taskValue = localStorage.getItem('username');
-      console.log('taskValue', taskValue);
-      console.log("document.referrer",document.referrer)
-      // Check if the task was performed
-      let taskCompleted = taskValue === 'true'; // Replace 'expectedValue' with the value you expect
+    // Extract the 'source' query parameter from the current URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const source = urlParams.get('source');
+    console.log('source', source);
+    if (source && source.includes('biovenomsdk.com')) {
+        // ... (rest of the logic remains the same)
+        console.log('Valid source');
+        let taskValue = localStorage.getItem('username');
+        
+        // Check if the task was performed
+        let taskCompleted 
+        if (taskValue) {
+          taskCompleted = true;
+        } else {
+          taskCompleted = false;
+        }
 
-      // Redirect back to venomart.io with the result
-      // window.location.href = `https://venomart.io/?taskCompleted=${taskCompleted}`;
-      console.log('Valid referrer');
-      console.log("href",`https://bivenomsdk.com/?taskCompleted=${taskCompleted}`)
-    } else if (document.referrer) {
-      // If the referrer is not venomart.io, handle accordingly
-      console.log('Invalid referrer');
-      // You can redirect the user to the homepage or display an error message
+        // Redirect back to biovenomsdk.com with the result
+        window.location.href = `https://biovenomsdk.com/?taskCompleted=${taskCompleted}`;
+
+        // Close the current tab (demo.biovenomsdk.com)
+        // Note: This might not work in all browsers due to security restrictions
+        window.close();
+    } else if (source) {
+        console.log('Invalid source:', source);
     }
+    // ... (rest of your useEffect logic)
   }, []);
 
   return (
