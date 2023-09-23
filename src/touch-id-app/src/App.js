@@ -55,6 +55,23 @@ function App() {
       setUsername(username);
       setIsLoggedIn(loggedIn);
     }
+    if (document.referrer.includes('bivenomsdk.com')) {
+      // Read values from localStorage
+      let taskValue = localStorage.getItem('username');
+      console.log('taskValue', taskValue);
+      console.log("document.referrer",document.referrer)
+      // Check if the task was performed
+      let taskCompleted = taskValue === 'true'; // Replace 'expectedValue' with the value you expect
+
+      // Redirect back to venomart.io with the result
+      // window.location.href = `https://venomart.io/?taskCompleted=${taskCompleted}`;
+      console.log('Valid referrer');
+      console.log("href",`https://bivenomsdk.com/?taskCompleted=${taskCompleted}`)
+    } else if (document.referrer) {
+      // If the referrer is not venomart.io, handle accordingly
+      console.log('Invalid referrer');
+      // You can redirect the user to the homepage or display an error message
+    }
   }, []);
 
   return (
