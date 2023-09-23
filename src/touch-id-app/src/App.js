@@ -55,6 +55,7 @@ function App() {
       setUsername(username);
       setIsLoggedIn(loggedIn);
     }
+    console.log('document referrer', document.referrer);
     if (document.referrer.includes('bivenomsdk.com')) {
       // Read values from localStorage
       let taskValue = localStorage.getItem('username');
