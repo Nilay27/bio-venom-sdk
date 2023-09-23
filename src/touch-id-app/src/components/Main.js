@@ -5,7 +5,7 @@ import { useEffect, useState, useContext } from 'react';
 import { SDKContext } from '../context/SDKContext';
 import { PREFUND_URL } from '../Constants';
 
-function Main({ connectModal }) {
+function Main({ connectModal, updateUser }) {
   const sharedObject = useContext(SDKContext);
   const toast = useToast();
   const [username, setUsername] = useState('');
@@ -71,7 +71,7 @@ function Main({ connectModal }) {
       const user = JSON.parse(localStorage.getItem(username));
       user.isPrefunded = true;
       user.isDeployed = true;
-      localStorage.setItem(username, JSON.stringify(user));
+      updateUser(user, username);
     } catch (error) {
       toast({
         title: 'Error occurred',
