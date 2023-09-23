@@ -77,7 +77,7 @@ function App() {
 
         // Close the current tab (demo.biovenomsdk.com)
         // Note: This might not work in all browsers due to security restrictions
-        window.close();
+        // window.close();
     } else if (source) {
         console.log('Invalid source:', source);
     }
