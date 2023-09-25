@@ -61,26 +61,26 @@ function App() {
     const source = urlParams.get('source');
     console.log('source', source);
     if (source && PARTNER_SITES.includes('bivenomsdk.com')) {
-        // ... (rest of the logic remains the same)
-        console.log('Valid source');
-        let taskValue = localStorage.getItem('username');
-        
-        // Check if the task was performed
-        let taskCompleted 
-        if (taskValue) {
-          taskCompleted = true;
-        } else {
-          taskCompleted = false;
-        }
+      // ... (rest of the logic remains the same)
+      console.log('Valid source');
+      let taskValue = localStorage.getItem('username');
 
-        // Redirect back to biovenomsdk.com with the result
-        window.location.href = `https://biovenomsdk.com/?taskCompleted=${taskCompleted}`;
+      // Check if the task was performed
+      let taskCompleted;
+      if (taskValue) {
+        taskCompleted = true;
+      } else {
+        taskCompleted = false;
+      }
 
-        // Close the current tab (demo.biovenomsdk.com)
-        // Note: This might not work in all browsers due to security restrictions
-        // window.close();
+      // Redirect back to biovenomsdk.com with the result
+      window.location.href = `https://biovenomsdk.com/?taskCompleted=${taskCompleted}`;
+
+      // Close the current tab (demo.biovenomsdk.com)
+      // Note: This might not work in all browsers due to security restrictions
+      // window.close();
     } else if (source) {
-        console.log('Invalid source:', source);
+      console.log('Invalid source:', source);
     }
     // ... (rest of your useEffect logic)
   }, []);
@@ -102,12 +102,11 @@ function App() {
             Your device is your Hardware-Wallet: Simple, Secure and Streamlined
           </Text>
         </Center>
-        <Main connectModal={connectModal} updateUser={updateUser} />
         {user.isPrefunded && user.isDeployed && isLoggedIn ? (
           <Flex flexDirection="column" alignItems="center">
             <Flex alignItems="center" mb={2}>
               <Text fontSize={{ base: '20px', sm: '24px' }} mr={2}>
-                Username: {username}
+                Welcome: {username}
               </Text>
               <IconButton
                 icon={<CopyIcon fontSize="20px" color="white" />}
@@ -119,22 +118,9 @@ function App() {
                 _hover={{ bg: 'gray.600', opacity: 0.8 }}
               />
             </Flex>
-            <Flex alignItems="center">
-              <Text fontSize={{ base: '20px', sm: '24px' }} mr={2}>
-                Address: {user.walletAddress.slice(0, 5)}...{user.walletAddress.slice(-5)}
-              </Text>
-              <IconButton
-                icon={<CopyIcon fontSize="20px" color="white" />}
-                onClick={() => {
-                  navigator.clipboard.writeText(user.walletAddress);
-                }}
-                size="sm"
-                bg="transparent"
-                _hover={{ bg: 'gray.600', opacity: 0.8 }}
-              />
-            </Flex>
           </Flex>
         ) : null}
+        <Main connectModal={connectModal} updateUser={updateUser} />
       </Box>
     </SDKContextProvider>
   );
