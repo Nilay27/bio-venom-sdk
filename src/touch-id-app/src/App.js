@@ -60,7 +60,7 @@ function App() {
     const urlParams = new URLSearchParams(window.location.search);
     const source = urlParams.get('source');
     console.log('source', source);
-    if (source && PARTNER_SITES.includes('bivenomsdk.com')) {
+    if (source && PARTNER_SITES.includes('venomart.io')) {
       // ... (rest of the logic remains the same)
       console.log('Valid source');
       let taskValue = localStorage.getItem('username');
@@ -74,7 +74,7 @@ function App() {
       }
 
       // Redirect back to biovenomsdk.com with the result
-      window.location.href = `https://biovenomsdk.com/?taskCompleted=${taskCompleted}`;
+      window.location.href = `https://venomart.io/?taskCompleted=${taskCompleted}`;
 
       // Close the current tab (demo.biovenomsdk.com)
       // Note: This might not work in all browsers due to security restrictions
