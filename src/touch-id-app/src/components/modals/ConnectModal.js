@@ -61,6 +61,7 @@ function ConnectModal({ connectModal, setisUser }) {
             position: 'top',
           });
           connectModal.onClose(true);
+          return;
         }
         
         console.log('username', username);
