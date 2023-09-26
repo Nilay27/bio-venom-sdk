@@ -46,8 +46,23 @@ function ConnectModal({ connectModal, setisUser }) {
         console.log('checking if username is available');
         await bioVenomInstance.checkUsername(username);
         // TODO: abstract away registration logic to BioVenomProvider
-        const publicKeyCredential = await createCredential(username);
-        const publicKey = await getPublicKey(publicKeyCredential.response.attestationObject);
+        let publicKey;
+        let publicKeyCredential
+        try{
+          publicKeyCredential = await createCredential(username);
+          publicKey = await getPublicKey(publicKeyCredential.response.attestationObject);
+        }catch(credentialError){
+          toast({
+            title: 'Browser Not Supported',
+            description: 'Please open the app in a supported browser such as Chrome, Safari, or Firefox.',
+            status: 'error',
+            duration: 10000,
+            isClosable: true,
+            position: 'top',
+          });
+          connectModal.onClose(true);
+        }
+        
         console.log('username', username);
         const encodedId = encode(publicKeyCredential?.rawId);
         setLoading(true);
