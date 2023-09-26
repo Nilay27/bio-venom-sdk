@@ -22,6 +22,7 @@ function Main({ connectModal, updateUser }) {
   const [prefundStatus, setprefundStatus] = useState(false);
   const [isUser, setisUser] = useState(JSON.parse(localStorage.getItem('user')));
   const { isOpen: istransactOpen, onOpen: ontransactOpen, onClose: ontransactClose } = useDisclosure();
+  const reactGA = sharedObject.analytics;
 
   const transactModal = {
     isOpen: istransactOpen,
@@ -162,6 +163,7 @@ function Main({ connectModal, updateUser }) {
       setprefundStatus(true);
       setisUser(JSON.parse(localStorage.getItem('user')));
     }
+    reactGA.send({ hitType: 'pageview', page: window.location.pathname });
   }, []);
 
   return (

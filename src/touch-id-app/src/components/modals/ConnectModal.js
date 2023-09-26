@@ -26,6 +26,7 @@ function ConnectModal({ connectModal, setisUser }) {
     setUsername(event.target.value);
   };
   const toast = useToast();
+  const reactGA = sharedObject.analytics;
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
@@ -47,11 +48,11 @@ function ConnectModal({ connectModal, setisUser }) {
         await bioVenomInstance.checkUsername(username);
         // TODO: abstract away registration logic to BioVenomProvider
         let publicKey;
-        let publicKeyCredential
-        try{
+        let publicKeyCredential;
+        try {
           publicKeyCredential = await createCredential(username);
           publicKey = await getPublicKey(publicKeyCredential.response.attestationObject);
-        }catch(credentialError){
+        } catch (credentialError) {
           toast({
             title: 'Browser Not Supported',
             description: 'Please open the app in a supported browser such as Chrome, Safari, Firefox etc.',
@@ -63,7 +64,7 @@ function ConnectModal({ connectModal, setisUser }) {
           connectModal.onClose(true);
           return;
         }
-        
+
         console.log('username', username);
         const encodedId = encode(publicKeyCredential?.rawId);
         setLoading(true);
