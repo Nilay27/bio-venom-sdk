@@ -54,7 +54,7 @@ function ConnectModal({ connectModal, setisUser }) {
         }catch(credentialError){
           toast({
             title: 'Browser Not Supported',
-            description: 'Please open the app in a supported browser such as Chrome, Safari, or Firefox.',
+            description: 'Please open the app in a supported browser such as Chrome, Safari, Firefox etc.',
             status: 'error',
             duration: 10000,
             isClosable: true,
