@@ -60,29 +60,19 @@ function App() {
     const urlParams = new URLSearchParams(window.location.search);
     const source = urlParams.get('source');
     console.log('source', source);
-    if (source && PARTNER_SITES.includes('venomart.io')) {
+    if (source && PARTNER_SITES.hasOwnProperty(source)) {
       // ... (rest of the logic remains the same)
       console.log('Valid source');
       let taskValue = localStorage.getItem('username');
-
+      console.log('source', source);
       // Check if the task was performed
-      let taskCompleted;
-      if (taskValue) {
-        taskCompleted = true;
-      } else {
-        taskCompleted = false;
-      }
-
-      // Redirect back to biovenomsdk.com with the result
-      window.location.href = `https://venomart.io/?taskCompleted=${taskCompleted}`;
-
-      // Close the current tab (demo.biovenomsdk.com)
-      // Note: This might not work in all browsers due to security restrictions
-      // window.close();
+      let taskCompleted = taskValue ? true : false;
+      console.log('URL', PARTNER_SITES[source]);
+      // Redirect back to the respective partner site with the result
+      window.location.href = `${PARTNER_SITES[source]}?taskCompleted=${taskCompleted}`;
     } else if (source) {
       console.log('Invalid source:', source);
     }
-    // ... (rest of your useEffect logic)
   }, []);
 
   return (

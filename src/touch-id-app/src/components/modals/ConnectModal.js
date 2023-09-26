@@ -45,6 +45,37 @@ function ConnectModal({ connectModal, setisUser }) {
       try {
         console.log('checking if username is available');
         await bioVenomInstance.checkUsername(username);
+        // TODO: abstract away registration logic to BioVenomProvider
+        const publicKeyCredential = await createCredential(username);
+        const publicKey = await getPublicKey(publicKeyCredential.response.attestationObject);
+        console.log('username', username);
+        const encodedId = encode(publicKeyCredential?.rawId);
+        setLoading(true);
+        const walletAddress = await bioVenomInstance.preCalculateAddress(publicKey);
+        toast({
+          title: 'Precalculated Wallet Address',
+          // show first 5 and last 5 chars separated by ...
+          description: `${walletAddress.substring(0, 5)}...${walletAddress.substring(walletAddress.length - 5)}`,
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+          position: 'top',
+        });
+        setLoading(false);
+        console.log('walletAddress returned from bioVenomInstance', walletAddress);
+        console.log('encodedId in signIn', encodedId);
+        localStorage.setItem(
+          username,
+          JSON.stringify({
+            encodedId: encodedId,
+            publicKey: publicKey,
+            walletAddress: walletAddress,
+            isPrefunded: false,
+            isDeployed: false,
+          }),
+        );
+        localStorage.setItem('username', username);
+        localStorage.setItem('user', true);
       } catch (error) {
         toast({
           title: 'Error',
@@ -56,37 +87,6 @@ function ConnectModal({ connectModal, setisUser }) {
         });
         return;
       }
-      // TODO: abstract away registration logic to BioVenomProvider
-      const publicKeyCredential = await createCredential(username);
-      const publicKey = await getPublicKey(publicKeyCredential.response.attestationObject);
-      console.log('username', username);
-      const encodedId = encode(publicKeyCredential?.rawId);
-      setLoading(true);
-      const walletAddress = await bioVenomInstance.preCalculateAddress(publicKey);
-      toast({
-        title: 'Precalculated Wallet Address',
-        // show first 5 and last 5 chars separated by ...
-        description: `${walletAddress.substring(0, 5)}...${walletAddress.substring(walletAddress.length - 5)}`,
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-        position: 'top',
-      });
-      setLoading(false);
-      console.log('walletAddress returned from bioVenomInstance', walletAddress);
-      console.log('encodedId in signIn', encodedId);
-      localStorage.setItem(
-        username,
-        JSON.stringify({
-          encodedId: encodedId,
-          publicKey: publicKey,
-          walletAddress: walletAddress,
-          isPrefunded: false,
-          isDeployed: false,
-        }),
-      );
-      localStorage.setItem('username', username);
-      localStorage.setItem('user', true);
     }
     // onSignIn();
     setisUser(true);
