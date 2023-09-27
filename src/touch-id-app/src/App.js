@@ -108,6 +108,20 @@ function App() {
                 _hover={{ bg: 'gray.600', opacity: 0.8 }}
               />
             </Flex>
+            <Flex alignItems="center">
+              <Text fontSize={{ base: '20px', sm: '24px' }} mr={2}>
+                Address: {user.walletAddress.slice(0, 5)}...{user.walletAddress.slice(-5)}
+              </Text>
+              <IconButton
+                icon={<CopyIcon fontSize="20px" color="white" />}
+                onClick={() => {
+                  navigator.clipboard.writeText(user.walletAddress);
+                }}
+                size="sm"
+                bg="transparent"
+                _hover={{ bg: 'gray.600', opacity: 0.8 }}
+              />
+            </Flex>
           </Flex>
         ) : null}
         <Main connectModal={connectModal} updateUser={updateUser} />
