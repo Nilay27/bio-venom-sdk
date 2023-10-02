@@ -110,7 +110,7 @@ function App() {
             </Flex>
             <Flex alignItems="center">
               <Text fontSize={{ base: '20px', sm: '24px' }} mr={2}>
-                Address: {user.walletAddress.slice(0, 5)}...{user.walletAddress.slice(-5)}
+                BioVenom Address: {user.walletAddress.slice(0, 5)}...{user.walletAddress.slice(-5)}
               </Text>
               <IconButton
                 icon={<CopyIcon fontSize="20px" color="white" />}
