@@ -96,14 +96,14 @@ function TransactionModal({ transactModal }) {
           position: 'top',
           duration: 10000,
         });
+        // Record the transaction completion to GA4
+        reactGA.event({
+          category: 'Transaction', // Optional: Organizes events in GA dashboard
+          action: 'Completed', // Required: Describes the event action
+          label: 'Transaction_Success', // Optional: Provides additional information
+          value: transferAmount, // Optional: You can track the transferred amount if desired
+        });
       }
-      // Record the transaction completion to GA4
-      reactGA.event({
-        category: 'Transaction',       // Optional: Organizes events in GA dashboard
-        action: 'Completed',           // Required: Describes the event action
-        label: 'Transaction_Success',  // Optional: Provides additional information
-        value: transferAmount          // Optional: You can track the transferred amount if desired
-    });
     } catch (error) {
       toast({
         title: 'Error occurred',
