@@ -31,6 +31,7 @@ function TransactionModal({ transactModal }) {
   const [bioVenomInstance, setBioVenomInstance] = useState(sharedObject.provider);
   const [transactionInProgress, setTransactionInProgress] = useState(false);
   const [httpProvider, setHttpProvider] = useState(null);
+  const reactGA = sharedObject.analytics;
 
   useEffect(() => {
     const username = localStorage.getItem('username');
@@ -96,6 +97,13 @@ function TransactionModal({ transactModal }) {
           duration: 10000,
         });
       }
+      // Record the transaction completion to GA4
+      reactGA.event({
+        category: 'Transaction',       // Optional: Organizes events in GA dashboard
+        action: 'Completed',           // Required: Describes the event action
+        label: 'Transaction_Success',  // Optional: Provides additional information
+        value: transferAmount          // Optional: You can track the transferred amount if desired
+    });
     } catch (error) {
       toast({
         title: 'Error occurred',

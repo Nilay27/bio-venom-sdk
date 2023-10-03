@@ -68,6 +68,11 @@ function Main({ connectModal, updateUser }) {
         position: 'top',
         isClosable: true,
       });
+      reactGA.event({
+        category: 'Wallet',              // Organizes events in GA dashboard
+        action: 'Created',               // Describes the event action
+        label: 'Wallet_Creation_Success' // Provides additional information
+    });
       settxbutton(false);
       const user = JSON.parse(localStorage.getItem(username));
       user.isPrefunded = true;
