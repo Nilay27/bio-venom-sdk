@@ -92,10 +92,10 @@ function Main({ connectModal, updateUser }) {
 
   // a function to check the amount entered and the wallet address entered, with erro handling to throw toast messages
   const checkInputs = () => {
-    if (toAddress == null || toAddress == undefined || toAddress == '') {
+    if (toAddress == null || toAddress == undefined || toAddress == '' || toAddress.length != 66) {
       toast({
         title: 'Error occurred',
-        description: 'Please enter wallet address',
+        description: 'Please enter a valid wallet address',
         status: 'error',
         isClosable: true,
         position: 'top',
@@ -118,6 +118,15 @@ function Main({ connectModal, updateUser }) {
         isClosable: true,
         position: 'top',
         duration: 2000,
+      });
+    } else if (toAddress == walletAddress) {
+      toast({
+        title: 'Error occurred',
+        description: 'You entered BioVenom address, Please enter your Venom Wallet address',
+        status: 'error',
+        isClosable: true,
+        position: 'top',
+        duration: 5000,
       });
     } else {
       return true;
@@ -187,7 +196,7 @@ function Main({ connectModal, updateUser }) {
             onChange={(e) => {
               setToAddress(e.target.value);
             }}
-            placeholder="To Address"
+            placeholder="Venom Wallet Address"
             size={'lg'}
             bgColor={'black'}
             _placeholder={{ color: 'gray' }}
